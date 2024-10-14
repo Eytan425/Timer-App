@@ -1,127 +1,91 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap");
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Open Sans", sans-serif;
+/* Import Google font - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+body{
+  min-height: 100vh;
+  width: 100%;
+  background: #009579;
+}
+.container{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  max-width: 430px;
+  width: 100%;
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+}
+.container .registration{
+  display: none;
+}
+#check:checked ~ .registration{
+  display: block;
+}
+#check:checked ~ .login{
+  display: none;
+}
+#check{
+  display: none;
+}
+.container .form{
+  padding: 2rem;
+}
+.form header{
+  font-size: 2rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+ .form input{
+   height: 60px;
+   width: 100%;
+   padding: 0 15px;
+   font-size: 17px;
+   margin-bottom: 1.3rem;
+   border: 1px solid #ddd;
+   border-radius: 6px;
+   outline: none;
+ }
+ .form input:focus{
+   box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+ }
+.form a{
+  font-size: 16px;
+  color: #009579;
+  text-decoration: none;
+}
+.form a:hover{
+  text-decoration: underline;
+}
+.form input.button{
+  color: #fff;
+  background: #009579;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-top: 1.7rem;
+  cursor: pointer;
+  transition: 0.4s;
+}
+.form input.button:hover{
+  background: #006653;
+}
+.signup{
+  font-size: 17px;
+  text-align: center;
+}
+.signup label{
+  color: #009579;
+  cursor: pointer;
+}
+.signup label:hover{
+  text-decoration: underline;
 }
 
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #f0f0f0; /* Light grey background */
-}
-
-.container {
-    width: 400px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: white; /* White background for the container */
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-}
-
-.form-toggle {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 20px;
-}
-
-.form-toggle input[type="radio"] {
-    display: none; /* Hide radio buttons */
-}
-
-.form-toggle label {
-    cursor: pointer;
-    font-weight: 600;
-    color: black; /* Black text color */
-    padding: 10px 20px;
-    border: 1px solid transparent;
-    transition: background 0.3s, color 0.3s;
-}
-
-.form-toggle label:hover {
-    background: rgba(0, 0, 0, 0.05); /* Light hover effect */
-}
-
-.form-container {
-    padding: 20px;
-}
-
-.form {
-    display: none; /* Hide forms initially */
-}
-
-.form h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: black; /* Heading color is black */
-}
-
-.input-field {
-    position: relative;
-    margin: 15px 0;
-}
-
-.input-field input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
-    transition: border 0.3s;
-}
-
-.input-field input:focus {
-    border-color: #aaa; /* Change border color on focus */
-}
-
-.input-field label {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    color: black; /* Label color is black */
-    transition: 0.2s;
-}
-
-.input-field input:focus ~ label,
-.input-field input:valid ~ label {
-    top: 10px;
-    font-size: 12px;
-    color: black; /* Keep label color black */
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background: white; /* White background for buttons */
-    color: black; /* Black text for buttons */
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s;
-}
-
-button:hover {
-    background: rgba(0, 0, 0, 0.05); /* Light hover effect */
-}
-
-#timer-section {
-    padding: 20px;
-    display: none; /* Initially hide the timer section */
-    text-align: center;
-}
-
-#timer-section h2 {
-    margin-bottom: 20px;
-    color: black; /* Timer section heading color */
-}
-
-#status {
-    margin-top: 10px;
-    color: black; /* Status text color */
-}
