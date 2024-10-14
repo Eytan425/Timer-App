@@ -1,0 +1,127 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Open Sans", sans-serif;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f0f0; /* Light grey background */
+}
+
+.container {
+    width: 400px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white; /* White background for the container */
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-toggle {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.form-toggle input[type="radio"] {
+    display: none; /* Hide radio buttons */
+}
+
+.form-toggle label {
+    cursor: pointer;
+    font-weight: 600;
+    color: black; /* Black text color */
+    padding: 10px 20px;
+    border: 1px solid transparent;
+    transition: background 0.3s, color 0.3s;
+}
+
+.form-toggle label:hover {
+    background: rgba(0, 0, 0, 0.05); /* Light hover effect */
+}
+
+.form-container {
+    padding: 20px;
+}
+
+.form {
+    display: none; /* Hide forms initially */
+}
+
+.form h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: black; /* Heading color is black */
+}
+
+.input-field {
+    position: relative;
+    margin: 15px 0;
+}
+
+.input-field input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+.input-field input:focus {
+    border-color: #aaa; /* Change border color on focus */
+}
+
+.input-field label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: black; /* Label color is black */
+    transition: 0.2s;
+}
+
+.input-field input:focus ~ label,
+.input-field input:valid ~ label {
+    top: 10px;
+    font-size: 12px;
+    color: black; /* Keep label color black */
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: white; /* White background for buttons */
+    color: black; /* Black text for buttons */
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+
+button:hover {
+    background: rgba(0, 0, 0, 0.05); /* Light hover effect */
+}
+
+#timer-section {
+    padding: 20px;
+    display: none; /* Initially hide the timer section */
+    text-align: center;
+}
+
+#timer-section h2 {
+    margin-bottom: 20px;
+    color: black; /* Timer section heading color */
+}
+
+#status {
+    margin-top: 10px;
+    color: black; /* Status text color */
+}
