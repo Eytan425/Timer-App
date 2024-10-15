@@ -1,5 +1,4 @@
-const users = require('../models/User');
-
+// Function to handle registration
 async function registerUser() {
     const signUpEmail = document.getElementById("signUpEmail").value;
     const signUpPassword = document.getElementById("signUpPassword").value;
@@ -10,25 +9,31 @@ async function registerUser() {
       alert("Passwords do not match.");
       return;
     }
-    try
-    {
-        const newUser = new users
-        ({
-            _id: new mongoose.Types.ObjectId(),
-            signUpEmail,
-            signUpPassword
-        });
-        const savedUser = await newUser.save();
-        console.alert(`Username: ${signUpUsername}\nPassword: ${signUpPassword}`);
-        return res.status(201).json({ message: 'User registered successfully', user: savedUser });
-        
+  
+    try {
+      // Send a POST request to the backend
+      const response = await fetch("http://localhost:3000/user/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: signUpEmail,
+          password: signUpPassword,
+          
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert(`User registered successfully: ${data.user.email}`);
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Error registering user:", error);
+      alert("An error occurred during registration. Please try again.");
     }
-    catch (error)
-    {
-        console.error("Error saving user:", error);
-        alert("An error occurred during registration. Please try again.");
-        res.status(500).json({ message: 'Server error' });
-    }
-    
-    
   }
+  
