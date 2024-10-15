@@ -1,11 +1,4 @@
-// const express = require('express');
-// const router = express.Router();
 
-// // const User = require('./client/script');
-
-// // router.post('/register', User.registerUser())
-
-// module.exports = router;
 
 
 const express = require('express');
