@@ -4,7 +4,7 @@ mongoose.pluralize(null);
 
 
 const User_Schema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+    UserName:{type:String, required:true},
     UserEmail: { type: String, trim: true, required: true },
     UserPassword: { type: String, trim: true, required: true }
 });

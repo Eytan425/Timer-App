@@ -1,37 +1,37 @@
 const container = document.getElementById('container');
 const registerBtn = document.getElementById('register');
 const loginBtn = document.getElementById('login');
+const signUpBtn = document.getElementById('signUpBtn'); 
+
+
 
 registerBtn.addEventListener('click', () => {
-    container.classList.add("active");
+  container.classList.add("active");
 });
 
 loginBtn.addEventListener('click', () => {
-    container.classList.remove("active");
+  container.classList.remove("active");
 });
 
 async function registerUser() {
+  const signUpName = document.getElementById("signUpName").value;
   const signUpEmail = document.getElementById("signUpEmail").value;
   const signUpPassword = document.getElementById("signUpPassword").value;
 
-  // Check if passwords match
-  if (signUpPassword !== document.getElementById("signUpPasswordAgain").value) {
-    alert("Passwords do not match.");
-    return;
-  }
-
   try {
     // Send a POST request to the backend
-    const response = await fetch("http://localhost:3000/user/auth/register", {
+    const response = await fetch("http://localhost:3000/user/auth/register",
+    {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: signUpEmail,
-        password: signUpPassword,
-      }),
-    });
+    },
+    body: JSON.stringify({
+      name: signUpName,
+      email: signUpEmail,
+      password: signUpPassword,
+    }),
+  });
 
     const data = await response.json();
 
@@ -45,3 +45,6 @@ async function registerUser() {
     alert("An error occurred during registration. Please try again.");
   }
 }
+
+// Attach the event listener to the signUpButton
+signUpBtn.addEventListener('click', registerUser);

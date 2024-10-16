@@ -190,6 +190,7 @@ body{
     left: 0;
     width: 50%;
     z-index: 2;
+    
 }
 
 .container.active .sign-in{
@@ -201,6 +202,7 @@ body{
     width: 50%;
     opacity: 0;
     z-index: 1;
+    
 }
 
 .container.active .sign-up{
