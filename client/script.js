@@ -47,4 +47,4 @@ async function registerUser() {
 }
 
 // Attach the event listener to the signUpButton
-signUpBtn.addEventListener('click', registerUser);
+// signUpBtn.addEventListener('click', registerUser);
