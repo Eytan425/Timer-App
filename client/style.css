@@ -46,7 +46,7 @@ body{
     margin: 15px 0 10px;
 }
 
-.container button > :hover{
+.container button{
     background-color: #512da8;
     color: #fff;
     font-size: 12px;
@@ -59,6 +59,7 @@ body{
     margin-top: 10px;
     cursor: pointer;
 }
+
 
 .container button.hidden{
     background-color: transparent;

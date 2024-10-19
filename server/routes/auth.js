@@ -1,16 +1,15 @@
 
 
-
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User'); // Adjust path if needed
+const User = require('../models/User'); // Assuming User model is in the same directory
 
 // Register User Route
 router.post('/register', async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
 
   try {
-    const newUser = new User({ email, password });
+    const newUser = new User({ name, email, password });
     const savedUser = await newUser.save();
     res.status(201).json({ message: 'User registered successfully', user: savedUser });
   } catch (error) {

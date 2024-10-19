@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config(); // Assuming you have dotenv configured
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -15,18 +15,22 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
 }));
 
-mongoose.connect(process.env.MONGODB_URI, {
-  // useNewUrlParser: true,
-  // useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }) // Assuming MONGODB_URI is configured in .env
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
+// Routes
 app.use('/user/auth', authRoutes);
-app.use('/user/timeRecordsRoutes', timeRecordsRoutes);
+app.use('/user/timeRecords', timeRecordsRoutes); // Updated route for time records
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
