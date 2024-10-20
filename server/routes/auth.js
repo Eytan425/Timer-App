@@ -35,5 +35,30 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+router.post('/signIn', async (req,res) =>{
+  console.log('Request Body: ' + req.body);
+  const {email, password} = req.body;
+  if(!email||!password){
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+  try{
+    const user = User.findOne({signInEmail:email})
+    const isPasswordValid = password === user.UserPassword;
+    if(user==false || isPasswordValid == false){
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+    res.status(200).json({
+      message: 'Login successful',
+      user: {
+        id: user._id,
+        name: user.UserName,
+        email: user.UserEmail,
+      },
+    });
+  }catch(error){
+    console.error('Error signing in:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+})
 
 module.exports = router;

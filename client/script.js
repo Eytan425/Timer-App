@@ -34,7 +34,7 @@ async function register() {
     const data = await response.json();
 
     if (response.ok) {
-      alert(`User registered successfully: ${data.user ? data.user.email : 'No email provided'}`);
+      alert(`User registered successfully!`);
     } else {
       alert(data.message);
     }
@@ -44,27 +44,39 @@ async function register() {
   }
 }
 
-async function signIn(){
+async function signIn() {
   const signInEmail = document.getElementById('signInEmail').value;
-  const signInPassword = document.getElementById('signInPassword');
+  const signInPassword = document.getElementById('signInPassword').value;
+
   try {
-    // Send a POST request to the backend (updated endpoint)
-    const response = await fetch("http://localhost:3000/user/auth/register", {
+    // Send a POST request to the backend (correct endpoint)
+    const response = await fetch("http://localhost:3000/user/auth/signIn", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email:signInEmail,
-        password:signInPassword
+        email: signInEmail,
+        password: signInPassword,
       }),
     });
-  }
-  catch (error) {
+
+    const data = await response.json(); // Parse the response body
+
+    if (response.ok) {
+      alert(`User signed in successfully!`);
+      console.log("User Data:", data); // Optional: Check what the backend returns
+      // Redirect to another page, or perform further actions (if needed)
+    } else {
+      alert(data.message || 'Invalid credentials'); // Show error message from backend
+    }
+
+  } catch (error) {
     console.error("Error signing in:", error);
-    alert("An error occurred during sign-in. Please try again.\n" + error);
+    alert("An error occurred during sign-in. Please try again.\n" + error.message);
   }
 }
+
 
 // Attach the event listener to the signUpButton
 signUpBtn.addEventListener('click', register);
