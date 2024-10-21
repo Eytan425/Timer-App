@@ -3,6 +3,9 @@ const registerBtn = document.getElementById('register');
 const loginBtn = document.getElementById('login');
 const signUpBtn = document.getElementById('signUpBtn');
 const signInBtn = document.getElementById('signInBtn');
+const clockInBtn = document.getElementById('clockInBtn');
+
+const isSignedIn = false;
 
 registerBtn.addEventListener('click', () => {
   container.classList.add("active");
@@ -11,6 +14,16 @@ registerBtn.addEventListener('click', () => {
 loginBtn.addEventListener('click', () => {
   container.classList.remove("active");
 });
+clockInBtn.addEventListener('click', ()=>{
+  if(clockInBtn.value == "Clock In"){
+    clockInBtn.value = "Clock Out";
+  }
+  else{
+    clockInBtn.value = "Clock In";
+  }
+  
+});
+
 
 async function register() {
   const signUpName = document.getElementById("signUpName").value;
@@ -35,6 +48,7 @@ async function register() {
 
     if (response.ok) {
       alert(`User registered successfully!`);
+      container.classList.remove("active");
     } else {
       alert(data.message);
     }
@@ -44,7 +58,7 @@ async function register() {
   }
 }
 
-async function signIn() {
+async function signIn(isSignedIn) {
   const signInEmail = document.getElementById('signInEmail').value;
   const signInPassword = document.getElementById('signInPassword').value;
 
@@ -65,8 +79,11 @@ async function signIn() {
 
     if (response.ok) {
       alert(`User signed in successfully!`);
-      console.log("User Data:", data); // Optional: Check what the backend returns
-      // Redirect to another page, or perform further actions (if needed)
+      console.log("User Data:", data);
+      isSignedIn == true;
+      return isSignedIn;
+      
+      
     } else {
       alert(data.message || 'Invalid credentials'); // Show error message from backend
     }
