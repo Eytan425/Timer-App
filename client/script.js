@@ -5,7 +5,7 @@ const signUpBtn = document.getElementById('signUpBtn');
 const signInBtn = document.getElementById('signInBtn');
 const clockInBtn = document.getElementById('clockInBtn');
 
-const isSignedIn = false;
+let timerId;
 
 registerBtn.addEventListener('click', () => {
   container.classList.add("active");
@@ -16,9 +16,15 @@ loginBtn.addEventListener('click', () => {
 });
 clockInBtn.addEventListener('click', ()=>{
   if(clockInBtn.value == "Clock In"){
+    timerId = setInterval(function() {
+      const date = new Date;
+      console.log(date.getMinutes() + ' ' + date.getSeconds()
+        ); 
+    }, 1000);
     clockInBtn.value = "Clock Out";
   }
   else{
+    clearInterval(timerId);
     clockInBtn.value = "Clock In";
   }
   
@@ -58,7 +64,7 @@ async function register() {
   }
 }
 
-async function signIn(isSignedIn) {
+async function signIn() {
   const signInEmail = document.getElementById('signInEmail').value;
   const signInPassword = document.getElementById('signInPassword').value;
 
@@ -80,12 +86,11 @@ async function signIn(isSignedIn) {
     if (response.ok) {
       alert(`User signed in successfully!`);
       console.log("User Data:", data);
-      isSignedIn == true;
-      return isSignedIn;
-      
+      clockInBtn.removeAttribute("hidden");
       
     } else {
-      alert(data.message || 'Invalid credentials'); // Show error message from backend
+      alert(data.message || 'Invalid credentials');
+      clockInBtn.setAttribute("hidden", 'true'); // Show error message from backend
     }
 
   } catch (error) {
