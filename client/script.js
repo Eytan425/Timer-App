@@ -5,7 +5,6 @@ const signUpBtn = document.getElementById('signUpBtn');
 const signInBtn = document.getElementById('signInBtn');
 const clockInBtn = document.getElementById('clockInBtn');
 
-let timerId;
 
 registerBtn.addEventListener('click', () => {
   container.classList.add("active");
@@ -14,21 +13,43 @@ registerBtn.addEventListener('click', () => {
 loginBtn.addEventListener('click', () => {
   container.classList.remove("active");
 });
-clockInBtn.addEventListener('click', ()=>{
-  if(clockInBtn.value == "Clock In"){
-    timerId = setInterval(function() {
-      const date = new Date;
-      console.log(date.getMinutes() + ' ' + date.getSeconds()
-        ); 
+
+let timerId;  // Store the timer ID
+let seconds = 0;  // Initialize seconds counter
+let minutes = 0;  // Initialize minutes counter
+
+
+clockInBtn.addEventListener('click', () => {
+  if (clockInBtn.value === "Clock In") {
+    // Start the timer from 0:00
+    timerId = setInterval(() => {
+      seconds++;
+
+      if (seconds === 60) {
+        minutes++;
+        seconds = 0;
+      }
+
+      console.log(`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
     }, 1000);
+
     clockInBtn.value = "Clock Out";
-  }
-  else{
+  } else {
+    // Stop the timer
     clearInterval(timerId);
+    document.getElementById("timeText").innerHTML = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    // hiddenText.style.display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    
+    console.log('Clocked Out');
+
+    // Reset the timer values
+    seconds = 0;
+    minutes = 0;
+
     clockInBtn.value = "Clock In";
   }
-  
 });
+
 
 
 async function register() {

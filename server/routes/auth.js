@@ -52,7 +52,7 @@ router.post('/signIn', async (req, res) => {
     }
 
     // Compare password (plain text comparison)
-    const isPasswordValid = password === user.UserPassword;
+    const isPasswordValid = password == user.UserPassword;
 
     // If password is incorrect, return an error
     if (!isPasswordValid) {
