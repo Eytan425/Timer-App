@@ -6,6 +6,7 @@ const signInBtn = document.getElementById('signInBtn');
 const clockInBtn = document.getElementById('clockInBtn');
 
 
+
 registerBtn.addEventListener('click', () => {
   container.classList.add("active");
 });
@@ -14,14 +15,22 @@ loginBtn.addEventListener('click', () => {
   container.classList.remove("active");
 });
 
-let timerId;  // Store the timer ID
-let seconds = 0;  // Initialize seconds counter
-let minutes = 0;  // Initialize minutes counter
+let timerId; // Store the timer ID
+let seconds = 0; // Initialize seconds counter
+let minutes = 0; // Initialize minutes counter
+let hours = 0; // Initialize hours counter
 
+// Variables to accumulate total worked time across sessions
+let totalSeconds = 0;
+let totalMinutes = 0;
+let totalHours = 0;
+
+
+const timeText = document.getElementById('timeText'); // Display time summary
 
 clockInBtn.addEventListener('click', () => {
   if (clockInBtn.value === "Clock In") {
-    // Start the timer from 0:00
+    // Start the timer for the session
     timerId = setInterval(() => {
       seconds++;
 
@@ -29,26 +38,50 @@ clockInBtn.addEventListener('click', () => {
         minutes++;
         seconds = 0;
       }
+      if (minutes === 60) {
+        hours++;
+        minutes = 0;
+      }
 
-      console.log(`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+      console.log(
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+      );
     }, 1000);
 
     clockInBtn.value = "Clock Out";
   } else {
-    // Stop the timer
+    // Stop the timer and accumulate time
     clearInterval(timerId);
-    document.getElementById("timeText").innerHTML = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    // hiddenText.style.display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    
+
+    // Add session time to total time
+    totalSeconds += seconds;
+    totalMinutes += minutes;
+    totalHours += hours;
+
+    // Handle overflow of seconds and minutes
+    if (totalSeconds >= 60) {
+      totalMinutes += Math.floor(totalSeconds / 60);
+      totalSeconds %= 60;
+    }
+    if (totalMinutes >= 60) {
+      totalHours += Math.floor(totalMinutes / 60);
+      totalMinutes %= 60;
+    }
+
+    // Display the accumulated total time worked
+    timeText.innerHTML = `You worked today: ${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSeconds).padStart(2, '0')}`;
+
     console.log('Clocked Out');
 
-    // Reset the timer values
+    // Reset the session time counters (not the total)
     seconds = 0;
     minutes = 0;
+    hours = 0;
 
     clockInBtn.value = "Clock In";
   }
 });
+
 
 
 

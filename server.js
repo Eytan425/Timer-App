@@ -14,8 +14,8 @@ app.use(cors({
   origin: 'http://127.0.0.1:5500', // Allow requests from your frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
 }));
-
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }) // Assuming MONGODB_URI is configured in .env
+//useNewUrlParser: true, useUnifiedTopology: true 
+mongoose.connect(process.env.MONGODB_URI, {}) // Assuming MONGODB_URI is configured in .env
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
