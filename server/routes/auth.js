@@ -75,4 +75,31 @@ router.post('/signIn', async (req, res) => {
   }
 });
 
+router.post('/logWorkTime', async (req, res) => {
+  const { userId, workedTime } = req.body;
+
+  // Validate input
+  if (!userId || typeof workedTime !== 'number') {
+    return res.status(400).json({ message: 'Invalid input' });
+  }
+
+  try {
+    // Update user's timeWorked by adding the workedTime
+    const result = await User.updateOne(
+      { _id: userId },
+      { $inc: { timeWorked: workedTime } } // Increment timeWorked by workedTime
+    );
+
+    // Check if any document was modified
+    if (result.nModified === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Work time logged successfully!' });
+  } catch (error) {
+    console.error('Error logging work time:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

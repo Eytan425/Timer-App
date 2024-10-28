@@ -4,16 +4,7 @@ const loginBtn = document.getElementById('login');
 const signUpBtn = document.getElementById('signUpBtn');
 const signInBtn = document.getElementById('signInBtn');
 const clockInBtn = document.getElementById('clockInBtn');
-
-
-
-registerBtn.addEventListener('click', () => {
-  container.classList.add("active");
-});
-
-loginBtn.addEventListener('click', () => {
-  container.classList.remove("active");
-});
+const timeText = document.getElementById('timeText'); // Display time summary
 
 let timerId; // Store the timer ID
 let seconds = 0; // Initialize seconds counter
@@ -25,10 +16,15 @@ let totalSeconds = 0;
 let totalMinutes = 0;
 let totalHours = 0;
 
+registerBtn.addEventListener('click', () => {
+  container.classList.add("active");
+});
 
-const timeText = document.getElementById('timeText'); // Display time summary
+loginBtn.addEventListener('click', () => {
+  container.classList.remove("active");
+});
 
-clockInBtn.addEventListener('click', () => {
+clockInBtn.addEventListener('click', async () => {
   if (clockInBtn.value === "Clock In") {
     // Start the timer for the session
     timerId = setInterval(() => {
@@ -54,6 +50,8 @@ clockInBtn.addEventListener('click', () => {
     clearInterval(timerId);
 
     // Add session time to total time
+
+
     totalSeconds += seconds;
     totalMinutes += minutes;
     totalHours += hours;
@@ -67,11 +65,14 @@ clockInBtn.addEventListener('click', () => {
       totalHours += Math.floor(totalMinutes / 60);
       totalMinutes %= 60;
     }
-
+    const sessionTimeInSeconds = totalHours * 3600 + totalMinutes * 60 + totalSeconds;
     // Display the accumulated total time worked
     timeText.innerHTML = `You worked today: ${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSeconds).padStart(2, '0')}`;
 
     console.log('Clocked Out');
+
+    // Log work time to backend
+    await logWorkTime(userId, sessionTimeInSeconds); // Ensure userId is defined
 
     // Reset the session time counters (not the total)
     seconds = 0;
@@ -82,8 +83,34 @@ clockInBtn.addEventListener('click', () => {
   }
 });
 
+// Function to log work time to backend
+async function logWorkTime(userId, sessionTimeInSeconds) {
+  try {
+    const response = await fetch("http://localhost:3000/user/auth/logWorkTime", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        workedTime: sessionTimeInSeconds,
+      }),
+    });
 
+    if (!response.ok) {
+      const errorText = await response.text(); // Get response text
+      console.error('Error logging work time:', errorText);
+      throw new Error('Failed to log work time');
+    }
 
+    const data = await response.json();
+
+    console.log(`Successfully logged work time for user ${userId}`);
+  } catch (error) {
+    alert('Error logging work time: ' + error.message);
+    console.error('Error logging work time:', error);
+  }
+}
 
 async function register() {
   const signUpName = document.getElementById("signUpName").value;
@@ -91,7 +118,6 @@ async function register() {
   const signUpPassword = document.getElementById("signUpPassword").value;
 
   try {
-    // Send a POST request to the backend (updated endpoint)
     const response = await fetch("http://localhost:3000/user/auth/register", {
       method: "POST",
       headers: {
@@ -123,7 +149,6 @@ async function signIn() {
   const signInPassword = document.getElementById('signInPassword').value;
 
   try {
-    // Send a POST request to the backend (correct endpoint)
     const response = await fetch("http://localhost:3000/user/auth/signIn", {
       method: "POST",
       headers: {
@@ -135,16 +160,20 @@ async function signIn() {
       }),
     });
 
-    const data = await response.json(); // Parse the response body
+    const data = await response.json(); 
 
     if (response.ok) {
       alert(`User signed in successfully!`);
+      
+      // Assuming user data contains an ID
+      userId = data.userId; // Store user ID for later use
       console.log("User Data:", data);
+      
       clockInBtn.removeAttribute("hidden");
       
     } else {
       alert(data.message || 'Invalid credentials');
-      clockInBtn.setAttribute("hidden", 'true'); // Show error message from backend
+      clockInBtn.setAttribute("hidden", 'true'); 
     }
 
   } catch (error) {
@@ -153,7 +182,6 @@ async function signIn() {
   }
 }
 
-
-// Attach the event listener to the signUpButton
+// Attach event listeners
 signUpBtn.addEventListener('click', register);
 signInBtn.addEventListener('click', signIn);
