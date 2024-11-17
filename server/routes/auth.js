@@ -2,6 +2,27 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Ensure correct path
 
+router.post('/logTimes', async(req,res) =>{
+  console.log('Request Body: ', req.body);
+  const { email, timeWorked } = req.body;
+
+  try {
+    const user = await User.findOne({ UserEmail: email });
+    if (!user) {
+      return res.status(400).json({ message: "Can't find user!" });
+    }
+
+    user.timeWorked += timeWorked; // Assuming you have a timeWorked field in your User model
+
+    // Update the user in the database (implementation depends on your database)
+    await user.save();
+
+    res.status(200).json({ message: "Logged time successfully!" });
+  } catch (error) {
+    console.error("Error logging time: ", error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 // Register User Route
 router.post('/register', async (req, res) => {
   console.log('Request Body:', req.body); // Debugging
@@ -75,31 +96,6 @@ router.post('/signIn', async (req, res) => {
   }
 });
 
-// router.post('/logWorkTime', async (req, res) => {
-//   const { userId, workedTime } = req.body;
 
-//   // Validate input
-//   if (!userId || typeof workedTime !== 'number') {
-//     return res.status(400).json({ message: 'Invalid input' });
-//   }
-
-//   try {
-//     // Update user's timeWorked by adding the workedTime
-//     const result = await User.updateOne(
-//       { _id: userId },
-//       { $inc: { timeWorked: workedTime } } // Increment timeWorked by workedTime
-//     );
-
-//     // Check if any document was modified
-//     if (result.nModified === 0) {
-//       return res.status(404).json({ message: 'User not found' });
-//     }
-
-//     res.status(200).json({ message: 'Work time logged successfully!' });
-//   } catch (error) {
-//     console.error('Error logging work time:', error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
 
 module.exports = router;

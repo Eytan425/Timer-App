@@ -1,4 +1,4 @@
-const users = require('../server/models/User.js'); //the route to the schema
+
 const container = document.getElementById('container');
 const registerBtn = document.getElementById('register');
 const loginBtn = document.getElementById('login');
@@ -6,7 +6,8 @@ const signUpBtn = document.getElementById('signUpBtn');
 const signInBtn = document.getElementById('signInBtn');
 const clockInBtn = document.getElementById('clockInBtn');
 const timeText = document.getElementById('timeText'); // Display time summary
-
+let UserEmail;
+let totalTimeInDecimals;
 
 let timerId; // Store the timer ID
 let seconds = 0; // Initialize seconds counter
@@ -68,10 +69,11 @@ clockInBtn.addEventListener('click', async () => {
       totalMinutes %= 60;
     }
     const sessionTimeInSecondsTest = totalHours * 3600 + totalMinutes * 60 + totalSeconds;
-    const totalTimeInDecimals = totalHours + (totalMinutes / 60) + (totalSeconds / 3600);
+    totalTimeInDecimals = totalHours + (totalMinutes / 60) + (totalSeconds / 3600);
     // Display the accumulated total time worked
     timeText.innerHTML = `You worked today: ${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSeconds).padStart(2, '0')}`;
-    alert("You have worked a total of " + TotalTimeInDecimals + " hours");
+    alert("You have worked a total of " + totalTimeInDecimals + " hours");
+    logTime(UserEmail, totalTimeInDecimals);
     console.log('Clocked Out');
 
 
@@ -85,34 +87,29 @@ clockInBtn.addEventListener('click', async () => {
   }
 });
 
-// Function to log work time to backend
-// async function logWorkTime(userId, sessionTimeInSeconds) {
-//   try {
-//     const response = await fetch("http://localhost:3000/user/auth/logWorkTime", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         userId: userId,
-//         workedTime: sessionTimeInSeconds,
-//       }),
-//     });
-
-//     if (!response.ok) {
-//       const errorText = await response.text(); // Get response text
-//       console.error('Error logging work time:', errorText);
-//       throw new Error('Failed to log work time');
-//     }
-
-//     const data = await response.json();
-
-//     console.log(`Successfully logged work time for user ${userId}`);
-//   } catch (error) {
-//     alert('Error logging work time: ' + error.message);
-//     console.error('Error logging work time:', error);
-//   }
-// }
+async function logTime(UserEmail, totalTimeInDecimals) {
+  try {
+    const response = await fetch("http://localhost:3000/user/auth/logTimes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: UserEmail,
+        timeWorked: totalTimeInDecimals,
+      }),
+    });
+    const data = await response.json();
+    if (response.ok) {
+      alert("Logged time successfully!");
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.error("Error logging time: ", error);
+    alert("An error occurred while logging the time. Please try again.\n" + error);
+  }
+}
 
 async function register() {
   const signUpName = document.getElementById("signUpName").value;
@@ -161,7 +158,7 @@ async function signIn() {
         password: signInPassword,
       }),
     });
-
+    UserEmail = signInEmail;
     const data = await response.json(); 
 
     if (response.ok) {
