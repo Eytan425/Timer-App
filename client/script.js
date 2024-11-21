@@ -72,7 +72,6 @@ clockInBtn.addEventListener('click', async () => {
     totalTimeInDecimals = totalHours + (totalMinutes / 60) + (totalSeconds / 3600);
     // Display the accumulated total time worked
     timeText.innerHTML = `You worked today: ${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSeconds).padStart(2, '0')}`;
-    alert("You have worked a total of " + totalTimeInDecimals + " hours");
     logTime(UserEmail, totalTimeInDecimals);
     console.log('Clocked Out');
 
@@ -132,7 +131,6 @@ async function register() {
     const data = await response.json();
 
     if (response.ok) {
-      alert(`User registered successfully!`);
       container.classList.remove("active");
     } else {
       alert(data.message);
@@ -162,7 +160,7 @@ async function signIn() {
     const data = await response.json(); 
 
     if (response.ok) {
-      alert(`User signed in successfully!`);
+      
       
       // Assuming user data contains an ID
       userId = data.userId; // Store user ID for later use
