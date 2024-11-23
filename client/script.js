@@ -1,4 +1,3 @@
-
 const container = document.getElementById('container');
 const registerBtn = document.getElementById('register');
 const loginBtn = document.getElementById('login');
@@ -8,6 +7,7 @@ const clockInBtn = document.getElementById('clockInBtn');
 const timeText = document.getElementById('timeText'); // Display time summary
 let UserEmail;
 let totalTimeInDecimals;
+let day; // Returns a number 0 - 6 (Sunday to Saturday)
 
 let timerId; // Store the timer ID
 let seconds = 0; // Initialize seconds counter
@@ -53,8 +53,6 @@ clockInBtn.addEventListener('click', async () => {
     clearInterval(timerId);
 
     // Add session time to total time
-
-
     totalSeconds += seconds;
     totalMinutes += minutes;
     totalHours += hours;
@@ -68,14 +66,15 @@ clockInBtn.addEventListener('click', async () => {
       totalHours += Math.floor(totalMinutes / 60);
       totalMinutes %= 60;
     }
-    const sessionTimeInSecondsTest = totalHours * 3600 + totalMinutes * 60 + totalSeconds;
+
+    // Calculate the total time worked in decimals
     totalTimeInDecimals = totalHours + (totalMinutes / 60) + (totalSeconds / 3600);
+
     // Display the accumulated total time worked
     timeText.innerHTML = `You worked today: ${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSeconds).padStart(2, '0')}`;
     logTime(UserEmail, totalTimeInDecimals);
+
     console.log('Clocked Out');
-
-
 
     // Reset the session time counters (not the total)
     seconds = 0;
@@ -86,8 +85,13 @@ clockInBtn.addEventListener('click', async () => {
   }
 });
 
+// Function to log time to the server
 async function logTime(UserEmail, totalTimeInDecimals) {
   try {
+    // Get the current day of the week (0-6)
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const dayWorked = daysOfWeek[new Date().getDay()];  // Get the current day name
+
     const response = await fetch("http://localhost:3000/user/auth/logTimes", {
       method: "POST",
       headers: {
@@ -95,9 +99,13 @@ async function logTime(UserEmail, totalTimeInDecimals) {
       },
       body: JSON.stringify({
         email: UserEmail,
-        timeWorked: totalTimeInDecimals,
+        timeWorked: {
+          dayWorked: dayWorked,  // Send the day name
+          time: totalTimeInDecimals,
+        },
       }),
     });
+
     const data = await response.json();
     if (response.ok) {
       alert("Logged time successfully!");
@@ -110,6 +118,7 @@ async function logTime(UserEmail, totalTimeInDecimals) {
   }
 }
 
+// Registration function
 async function register() {
   const signUpName = document.getElementById("signUpName").value;
   const signUpEmail = document.getElementById("signUpEmail").value;
@@ -141,6 +150,7 @@ async function register() {
   }
 }
 
+// Sign-in function
 async function signIn() {
   const signInEmail = document.getElementById('signInEmail').value;
   const signInPassword = document.getElementById('signInPassword').value;
@@ -156,23 +166,17 @@ async function signIn() {
         password: signInPassword,
       }),
     });
-    UserEmail = signInEmail;
-    const data = await response.json(); 
+
+    const data = await response.json();
 
     if (response.ok) {
-      
-      
-      // Assuming user data contains an ID
-      userId = data.userId; // Store user ID for later use
+      UserEmail = signInEmail;
+      clockInBtn.removeAttribute("hidden"); // Show the clock in button
       console.log("User Data:", data);
-      
-      clockInBtn.removeAttribute("hidden");
-      
     } else {
       alert(data.message || 'Invalid credentials');
-      clockInBtn.setAttribute("hidden", 'true'); 
+      clockInBtn.setAttribute("hidden", 'true'); // Hide the clock in button if login fails
     }
-
   } catch (error) {
     console.error("Error signing in:", error);
     alert("An error occurred during sign-in. Please try again.\n" + error.message);

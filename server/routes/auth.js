@@ -2,27 +2,37 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Ensure correct path
 
-router.post('/logTimes', async(req,res) =>{
-  console.log('Request Body: ', req.body);
+router.post('/logTimes', async (req, res) => {
   const { email, timeWorked } = req.body;
+
+  // Get the current day of the week
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const dayWorked = daysOfWeek[new Date().getDay()];
 
   try {
     const user = await User.findOne({ UserEmail: email });
     if (!user) {
-      return res.status(400).json({ message: "Can't find user!" });
+      return res.status(404).json({ message: "User not found!" });
     }
 
-    user.timeWorked += timeWorked; // Assuming you have a timeWorked field in your User model
+    // Check if the day already exists in the `timeWorked` array
+    const dayEntry = user.timeWorked.find(entry => entry.dayWorked === dayWorked);
 
-    // Update the user in the database (implementation depends on your database)
+    if (dayEntry) {
+      dayEntry.time += timeWorked;
+    } else {
+      user.timeWorked.push({ dayWorked, time: timeWorked });
+    }
+
     await user.save();
-
     res.status(200).json({ message: "Logged time successfully!" });
   } catch (error) {
     console.error("Error logging time: ", error);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+
 // Register User Route
 router.post('/register', async (req, res) => {
   console.log('Request Body:', req.body); // Debugging
