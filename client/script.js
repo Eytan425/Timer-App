@@ -26,7 +26,7 @@ registerBtn.addEventListener('click', () => {
 loginBtn.addEventListener('click', () => {
   container.classList.remove("active");
 });
-
+//Clock in and Clock out
 clockInBtn.addEventListener('click', async () => {
   if (clockInBtn.value === "Clock In") {
     // Start the timer for the session
@@ -89,8 +89,8 @@ clockInBtn.addEventListener('click', async () => {
 async function logTime(UserEmail, totalTimeInDecimals) {
   try {
     // Get the current day of the week (0-6)
-    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const dayWorked = daysOfWeek[new Date().getDay()];  // Get the current day name
+    //const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    //const dayWorked = daysOfWeek[new Date().getDay()];  // Get the current day name
 
     const response = await fetch("http://localhost:3000/user/auth/logTimes", {
       method: "POST",
@@ -99,10 +99,7 @@ async function logTime(UserEmail, totalTimeInDecimals) {
       },
       body: JSON.stringify({
         email: UserEmail,
-        timeWorked: {
-          dayWorked: dayWorked,  // Send the day name
-          time: totalTimeInDecimals,
-        },
+        timeWorked: totalTimeInDecimals,
       }),
     });
 
@@ -134,6 +131,7 @@ async function register() {
         name: signUpName,
         email: signUpEmail,
         password: signUpPassword,
+        timeWorked:0,
       }),
     });
 

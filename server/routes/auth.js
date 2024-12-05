@@ -6,31 +6,46 @@ router.post('/logTimes', async (req, res) => {
   const { email, timeWorked } = req.body;
 
   // Get the current day of the week
-  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const dayWorked = daysOfWeek[new Date().getDay()];
+  // const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  // const dayWorked = daysOfWeek[new Date().getDay()];
 
   try {
+    console.log('Request received with:', req.body);
+
+    // Find the user by email
     const user = await User.findOne({ UserEmail: email });
     if (!user) {
+      console.log('User not found:', email);
       return res.status(404).json({ message: "User not found!" });
     }
 
+    console.log('User found:', user);
+
     // Check if the day already exists in the `timeWorked` array
-    const dayEntry = user.timeWorked.find(entry => entry.dayWorked === dayWorked);
+   // const dayEntry = user.timeWorked.find(entry => entry.dayWorked === dayWorked);
 
-    if (dayEntry) {
-      dayEntry.time += timeWorked;
-    } else {
-      user.timeWorked.push({ dayWorked, time: timeWorked });
-    }
+    // if (dayEntry) {
+    //   console.log('Day entry exists, updating time:', dayEntry);
+    //   dayEntry.time += timeWorked.time; // Use the `time` property from the incoming object
+    // } else {
+    //   console.log('No day entry found, adding new entry:', { dayWorked, time: timeWorked.time });
+    //   user.timeWorked.push({ dayWorked, time: timeWorked.time });
+    // }
+    user.timeWorked+=timeWorked;
 
+    // Save the updated user document
+    console.log('Saving updated user...');
     await user.save();
+
+    console.log('User updated successfully');
     res.status(200).json({ message: "Logged time successfully!" });
   } catch (error) {
     console.error("Error logging time: ", error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
+
+
 
 
 // Register User Route
