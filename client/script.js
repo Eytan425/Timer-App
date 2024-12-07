@@ -7,17 +7,11 @@ const clockInBtn = document.getElementById('clockInBtn');
 const timeText = document.getElementById('timeText'); // Display time summary
 let UserEmail;
 let totalTimeInDecimals;
-let day; // Returns a number 0 - 6 (Sunday to Saturday)
-
 let timerId; // Store the timer ID
-let seconds = 0; // Initialize seconds counter
-let minutes = 0; // Initialize minutes counter
-let hours = 0; // Initialize hours counter
+let seconds = 0, minutes = 0, hours = 0; // Initialize counters
 
 // Variables to accumulate total worked time across sessions
-let totalSeconds = 0;
-let totalMinutes = 0;
-let totalHours = 0;
+let totalSeconds = 0, totalMinutes = 0, totalHours = 0;
 
 registerBtn.addEventListener('click', () => {
   container.classList.add("active");
@@ -26,13 +20,13 @@ registerBtn.addEventListener('click', () => {
 loginBtn.addEventListener('click', () => {
   container.classList.remove("active");
 });
-//Clock in and Clock out
+
+// Clock in and Clock out
 clockInBtn.addEventListener('click', async () => {
   if (clockInBtn.value === "Clock In") {
     // Start the timer for the session
     timerId = setInterval(() => {
       seconds++;
-
       if (seconds === 60) {
         minutes++;
         seconds = 0;
@@ -42,17 +36,13 @@ clockInBtn.addEventListener('click', async () => {
         minutes = 0;
       }
 
-      console.log(
-        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-      );
+      console.log(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
     }, 1000);
 
     clockInBtn.value = "Clock Out";
   } else {
     // Stop the timer and accumulate time
     clearInterval(timerId);
-
-    // Add session time to total time
     totalSeconds += seconds;
     totalMinutes += minutes;
     totalHours += hours;
@@ -69,18 +59,11 @@ clockInBtn.addEventListener('click', async () => {
 
     // Calculate the total time worked in decimals
     totalTimeInDecimals = totalHours + (totalMinutes / 60) + (totalSeconds / 3600);
-
-    // Display the accumulated total time worked
     timeText.innerHTML = `You worked today: ${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSeconds).padStart(2, '0')}`;
     logTime(UserEmail, totalTimeInDecimals);
 
     console.log('Clocked Out');
-
-    // Reset the session time counters (not the total)
-    seconds = 0;
-    minutes = 0;
-    hours = 0;
-
+    seconds = 0; minutes = 0; hours = 0; // Reset session counters
     clockInBtn.value = "Clock In";
   }
 });
@@ -88,30 +71,23 @@ clockInBtn.addEventListener('click', async () => {
 // Function to log time to the server
 async function logTime(UserEmail, totalTimeInDecimals) {
   try {
-    // Get the current day of the week (0-6)
-    //const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    //const dayWorked = daysOfWeek[new Date().getDay()];  // Get the current day name
-
     const response = await fetch("http://localhost:3000/user/auth/logTimes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        email: UserEmail,
-        timeWorked: totalTimeInDecimals,
-      }),
+      body: JSON.stringify({ email: UserEmail, timeWorked: totalTimeInDecimals }),
     });
 
     const data = await response.json();
     if (response.ok) {
       alert("Logged time successfully!");
     } else {
-      alert(data.message);
+      alert(data.message || 'Failed to log time.');
     }
   } catch (error) {
     console.error("Error logging time: ", error);
-    alert("An error occurred while logging the time. Please try again.\n" + error);
+    alert("An error occurred while logging the time. Please try again.");
   }
 }
 
@@ -131,20 +107,20 @@ async function register() {
         name: signUpName,
         email: signUpEmail,
         password: signUpPassword,
-        timeWorked:0,
+        timeWorked: 0,
       }),
     });
 
     const data = await response.json();
-
     if (response.ok) {
+      alert("Registration successful!"); // Inform the user about the successful registration
       container.classList.remove("active");
     } else {
-      alert(data.message);
+      alert(data.message || 'Registration failed.');
     }
   } catch (error) {
     console.error("Error registering user:", error);
-    alert("An error occurred during registration. Please try again.\n" + error);
+    alert("An error occurred during registration. Please try again.");
   }
 }
 
@@ -159,14 +135,10 @@ async function signIn() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        email: signInEmail,
-        password: signInPassword,
-      }),
+      body: JSON.stringify({ email: signInEmail, password: signInPassword }),
     });
 
     const data = await response.json();
-
     if (response.ok) {
       UserEmail = signInEmail;
       clockInBtn.removeAttribute("hidden"); // Show the clock in button
@@ -177,7 +149,7 @@ async function signIn() {
     }
   } catch (error) {
     console.error("Error signing in:", error);
-    alert("An error occurred during sign-in. Please try again.\n" + error.message);
+    alert("An error occurred during sign-in. Please try again.");
   }
 }
 

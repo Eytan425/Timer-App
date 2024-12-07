@@ -1,21 +1,21 @@
-require('dotenv').config(); // Assuming you have dotenv configured
-
 const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./server/routes/auth.js');
-// const timeRecordsRoutes = require('./server/routes/timerRecords.js');
 const cors = require('cors'); // Import CORS middleware
-
+require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 3000;
 
+
+
 // Use CORS middleware
 app.use(cors({
-  origin: 'http://127.0.0.1:5500', // Allow requests from your frontend
+  origin: ['http://localhost:5500', 'http://127.0.0.1:5500'], // Allow both origins
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
+  credentials: true // Allow credentials
 }));
-//useNewUrlParser: true, useUnifiedTopology: true 
-mongoose.connect(process.env.MONGODB_URI, {}) // Assuming MONGODB_URI is configured in .env
+
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
@@ -24,7 +24,6 @@ app.use(express.json());
 
 // Routes
 app.use('/user/auth', authRoutes);
-// app.use('/user/timeRecords', timeRecordsRoutes); // Updated route for time records
 
 // Error handling middleware
 app.use((err, req, res, next) => {

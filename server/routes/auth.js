@@ -5,10 +5,6 @@ const User = require('../models/User'); // Ensure correct path
 router.post('/logTimes', async (req, res) => {
   const { email, timeWorked } = req.body;
 
-  // Get the current day of the week
-  // const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  // const dayWorked = daysOfWeek[new Date().getDay()];
-
   try {
     console.log('Request received with:', req.body);
 
@@ -20,17 +16,9 @@ router.post('/logTimes', async (req, res) => {
     }
 
     console.log('User found:', user);
+    user.timeWorked = user.timeWorked || 0; // Initialize if undefined
+    user.timeWorked += timeWorked; // Now safe to add
 
-    // Check if the day already exists in the `timeWorked` array
-   // const dayEntry = user.timeWorked.find(entry => entry.dayWorked === dayWorked);
-
-    // if (dayEntry) {
-    //   console.log('Day entry exists, updating time:', dayEntry);
-    //   dayEntry.time += timeWorked.time; // Use the `time` property from the incoming object
-    // } else {
-    //   console.log('No day entry found, adding new entry:', { dayWorked, time: timeWorked.time });
-    //   user.timeWorked.push({ dayWorked, time: timeWorked.time });
-    // }
     user.timeWorked+=timeWorked;
 
     // Save the updated user document
@@ -50,7 +38,7 @@ router.post('/logTimes', async (req, res) => {
 
 // Register User Route
 router.post('/register', async (req, res) => {
-  console.log('Request Body:', req.body); // Debugging
+  console.log('Request Body:', req.body);
 
   const { name, email, password } = req.body;
 
