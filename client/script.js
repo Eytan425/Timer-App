@@ -124,6 +124,7 @@ async function register() {
   }
 }
 
+
 // Sign-in function
 async function signIn() {
   const signInEmail = document.getElementById('signInEmail').value;
@@ -152,7 +153,31 @@ async function signIn() {
     alert("An error occurred during sign-in. Please try again.");
   }
 }
+document.addEventListener("keydown", async function(event) {
+  if (event.key === "Enter") {
+    const activeElement = document.activeElement;
+    if (activeElement.id === "signUpName" || activeElement.id === "signUpEmail" || activeElement.id === "signUpPassword") {
+      const signUpName = document.getElementById("signUpName").value;
+      const signUpEmail = document.getElementById("signUpEmail").value;
+      const signUpPassword = document.getElementById("signUpPassword").value;
 
+      if (signUpName && signUpEmail && signUpPassword) {
+        await register();
+      } else {
+        alert("Please fill in all fields.");
+      }
+    } else if (activeElement.id === "signInEmail" || activeElement.id === "signInPassword") {
+      const signInEmail = document.getElementById('signInEmail').value;
+      const signInPassword = document.getElementById('signInPassword').value;
+
+      if (signInEmail && signInPassword) {
+        await signIn();
+      } else {
+        alert("Please fill in all fields.");
+      }
+    }
+  }
+});
 // Attach event listeners
 signUpBtn.addEventListener('click', register);
 signInBtn.addEventListener('click', signIn);
