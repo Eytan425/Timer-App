@@ -2,6 +2,7 @@ const container = document.getElementById('container');
 const registerBtn = document.getElementById('register');
 const loginBtn = document.getElementById('login');
 const signUpBtn = document.getElementById('signUpBtn');
+const signOutBtn = document.getElementById('signOut');
 const signInBtn = document.getElementById('signInBtn');
 const clockInBtn = document.getElementById('clockInBtn');
 const timeText = document.getElementById('timeText'); // Display time summary
@@ -20,7 +21,9 @@ registerBtn.addEventListener('click', () => {
 loginBtn.addEventListener('click', () => {
   container.classList.remove("active");
 });
-
+signOutBtn.addEventListener('click', () => {
+  window.location.href = 'index.html';
+});
 // Clock in and Clock out
 clockInBtn.addEventListener('click', async () => {
   if (clockInBtn.value === "Clock In") {
