@@ -60,8 +60,7 @@ clockInBtn.addEventListener('click', async () => {
     // Calculate the total time worked in decimals
     totalTimeInDecimals = totalHours + (totalMinutes / 60) + (totalSeconds / 3600);
     timeText.innerHTML = `You worked today: ${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSeconds).padStart(2, '0')}`;
-    logTime(UserEmail, totalTimeInDecimals);
-
+    
     console.log('Clocked Out');
     seconds = 0; minutes = 0; hours = 0; // Reset session counters
     clockInBtn.value = "Clock In";
@@ -113,7 +112,7 @@ async function register() {
 
     const data = await response.json();
     if (response.ok) {
-      alert("Registration successful!"); // Inform the user about the successful registration
+      //alert("Registration successful!"); // Inform the user about the successful registration
       container.classList.remove("active");
     } else {
       alert(data.message || 'Registration failed.');
@@ -144,6 +143,7 @@ async function signIn() {
       UserEmail = signInEmail;
       clockInBtn.removeAttribute("hidden"); // Show the clock in button
       console.log("User Data:", data);
+      window.location.href = 'dashboard.html';
     } else {
       alert(data.message || 'Invalid credentials');
       clockInBtn.setAttribute("hidden", 'true'); // Hide the clock in button if login fails

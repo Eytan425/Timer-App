@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e3f2fd; /* Light background for contrast */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full height */
+}
+
+.Dashboard {
+    background-color: #5c6bc0; /* Main background color */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    flex: 1; /* Allow it to take available space */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align content to the top */
+}
+
+h1 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: #ffffff;
+    margin: 10px 0;
+}
+
+p1 {
+    color: white;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+input[type="button"] {
+    background-color: #512da8; /* Button color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 10px 0;
+}
+
+/* Positioning the Clock In button directly below Total Hours Worked */
+#clockInBtn {
+    margin-top: 10px; /* Ensure there is space above the Clock In button */
+}
+
+/* Styling for hover effect */
+input[type="button"]:hover {
+    background-color: #6a1b9a; /* Darker shade on hover */
+}
+
+#signOutBtn {
+    background-color: red; /* Sign out button color */
+    position: absolute; /* Position it absolutely */
+    bottom: 20px; /* 20px from the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust for half of the button's width */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 4px; /* Rounded corners */
+}

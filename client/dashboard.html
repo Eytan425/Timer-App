@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punch-Clock-Dashboard</title>
+    <link rel="stylesheet" href="dashboardstyle.css">
+    <link rel="icon" type="image/x-icon" href="/images/clockIcon.ico">
+</head>
+<body>
+    <div class="Dashboard">
+        <form>
+            <h1>Dashboard</h1>
+            <h2>Welcome, <span id="userName"></span>!</h2>
+            <p1>Total Hours Worked: <span id="timeWorked">!</span></p1>
+
+            <input type="button" id="clockInBtn" class="clockIn" value="Clock In">
+            <p><span id="timeText"></span></p>
+        </form>
+       
+        <input type="button" id="signOutBtn" class="logOut" value="Sign Out">
+    </div>
+    <script>
+        // Get the name from localStorage
+        const signUpName = localStorage.getItem('signUpName');
+        if (signUpName) {
+            document.getElementById('userName').textContent = signUpName;
+        } else {
+            document.getElementById('userName').textContent = 'Guest';
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

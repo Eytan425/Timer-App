@@ -30,6 +30,17 @@
                 
             </form>
         </div>
+        <script>
+            document.getElementById('signUpBtn').addEventListener('click', () => {
+                const signUpName = document.getElementById('signUpName').value;
+                if (signUpName) {
+                    localStorage.setItem('signUpName', signUpName);
+                    alert('Name saved!');
+                } else {
+                    alert('Please enter your name.');
+                }
+            });
+        </script>
         <div class="form-container sign-in">
             <form>
                 <h1>Sign In</h1>
@@ -65,6 +76,8 @@
     </div>
 
     <script src="script.js"></script>
+    
+    
 </body>
 
 </html>
