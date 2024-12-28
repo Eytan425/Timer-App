@@ -12,10 +12,9 @@
         <form>
             <h1>Dashboard</h1>
             <h2>Welcome, <span id="userName"></span>!</h2>
-            <p1>Total Hours Worked: <span id="timeWorked">!</span></p1>
-
+            <!-- <p1>Total Hours Worked: <span id="timeWorked">!</span></p1> -->
             <input type="button" id="clockInBtn" class="clockIn" value="Clock In">
-            <p><span id="timeText"></span></p>
+           
         </form>
        
         <input type="button" id="signOutBtn" class="logOut" value="Sign Out">
@@ -28,6 +27,9 @@
         } else {
             document.getElementById('userName').textContent = 'Guest';
         }
+        signOutBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
     </script>
     <script src="script.js"></script>
 </body>
