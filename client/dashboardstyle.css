@@ -1,68 +1,78 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #e3f2fd; /* Light background for contrast */
+    background-color: #c9d6ff;
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
     margin: 0;
     padding: 20px;
     display: flex;
-    flex-direction: column;
-    height: 100vh; /* Full height */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .Dashboard {
-    background-color: #5c6bc0; /* Main background color */
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     padding: 20px;
-    flex: 1; /* Allow it to take available space */
+    position: relative;
+    width: 400px;
+    max-width: 100%;
+    min-height: 300px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Align content to the top */
+    justify-content: flex-start; /* Align items at the top */
 }
 
-h1 {
-    color: white;
-    margin-bottom: 10px;
+/* Header Styling */
+.header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-align: left;
 }
 
-h2 {
-    color: #ffffff;
-    margin: 10px 0;
+.header h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #512da8;
+    margin-bottom: 5px;
 }
 
-p1 {
-    color: white;
-    font-size: 18px;
-    margin: 10px 0;
+.header h2 {
+    font-size: 16px;
+    color: #5c6bc0;
 }
 
+/* Buttons Styling */
 input[type="button"] {
-    background-color: #512da8; /* Button color */
-    color: white;
+    background-color: #512da8;
+    color: #ffffff;
     border: none;
     padding: 10px 20px;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin: 10px 0;
+    margin-top: 20px;
 }
 
-/* Positioning the Clock In button directly below Total Hours Worked */
-#clockInBtn {
-    margin-top: 10px; /* Ensure there is space above the Clock In button */
-}
-
-/* Styling for hover effect */
 input[type="button"]:hover {
-    background-color: #6a1b9a; /* Darker shade on hover */
+    background-color: #6a1b9a;
 }
 
+/* Clock In Button Position */
+#clockInBtn {
+    margin-top: 100px; /* Push it down below the header */
+}
+
+/* Sign Out Button Position */
 #signOutBtn {
-    background-color: red; /* Sign out button color */
-    position: absolute; /* Position it absolutely */
-    bottom: 20px; /* 20px from the bottom */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Adjust for half of the button's width */
-    padding: 10px 20px; /* Padding for the button */
-    border-radius: 4px; /* Rounded corners */
+    background-color: red;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 8px;
 }

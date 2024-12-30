@@ -60,7 +60,7 @@ clockInBtn.addEventListener('click', async () => {
     // Calculate the total time worked in decimals
     totalTimeInDecimals = totalHours + (totalMinutes / 60) + (totalSeconds / 3600);
     timeText.innerHTML = `You worked today: ${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSeconds).padStart(2, '0')}`;
-    
+
     console.log('Clocked Out');
     seconds = 0; minutes = 0; hours = 0; // Reset session counters
     clockInBtn.value = "Clock In";
