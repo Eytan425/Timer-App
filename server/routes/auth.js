@@ -47,6 +47,46 @@ router.post('/register', async (req, res) => {
   }
 
   try {
+    const existingUser = await User.findOne({ UserEmail: email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already exists' });
+    }
+
+    const newUser = new User({
+      UserName: name,
+      UserEmail: email,
+      UserPassword: password,
+    });
+
+    const savedUser = await newUser.save();
+    res.status(201).json({ message: 'User registered successfully!' });
+
+  } catch (error) {
+    console.error('Error registering user:', error);
+
+    if (error.code == 11000) {
+      return res.status(400).json({ message: 'Email already exists' });
+    }
+
+    res.status(500).json({ message: 'Server error' });
+  }
+}); 
+// Sign In Route
+router.post('/register', async (req, res) => {
+  console.log('Request Body:', req.body);
+
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  try {
+    const existingUser = await User.findOne({ UserEmail: email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already exists' });
+    }
+
     const newUser = new User({
       UserName: name,
       UserEmail: email,
@@ -66,7 +106,6 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 // Sign In Route
 router.post('/signIn', async (req, res) => {
   console.log('Request Body:', req.body); // Debugging
