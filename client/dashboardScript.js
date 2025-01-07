@@ -34,7 +34,7 @@ clockInBtn.addEventListener('click', async () => {
                 hours++;
                 minutes = 0;
             }
-
+            
             // Update the timer display in real-time
             timeText.innerHTML = `Time Worked: ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }, 1000);

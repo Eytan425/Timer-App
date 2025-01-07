@@ -82,10 +82,15 @@ router.post('/register', async (req, res) => {
   }
 
   try {
-    const existingUser = await User.findOne({ UserEmail: email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email already exists' });
-    }
+    User.findOne({ UserEmail: email }, function(err, user) {
+      if(err) {
+         return res.status(500).json({message: 'An error occurred while searching for the user.'});
+      }
+      if(user)
+      {
+        return res.status(400).json({message: 'Email already exists'});
+      }
+    }); 
 
     const newUser = new User({
       UserName: name,
@@ -119,7 +124,7 @@ router.post('/signIn', async (req, res) => {
   try {
     // Fetch user by email (must await the findOne operation)
     const user = await User.findOne({ UserEmail: email });
-
+    
     if (!user) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
