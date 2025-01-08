@@ -1,7 +1,51 @@
 const express = require('express');
-const router = express.Router();
+const passport = require('passport');
+const GitHubStrategy = require('passport-github2').Strategy;
 const User = require('../models/User'); // Ensure correct path
+const router = express.Router();
 
+// Replace these with your GitHub app credentials
+const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+
+// Configure GitHub strategy for use by Passport
+passport.use(new GitHubStrategy({
+    clientID: GITHUB_CLIENT_ID,
+    clientSecret: GITHUB_CLIENT_SECRET,
+    callbackURL: 'http://localhost:5500/auth/callback' // Change this to your callback URL
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+      // Check if the user already exists in the database
+      let user = await User.findOne({ UserEmail: profile.emails[0].value });
+      if (!user) {
+        // Create a new user if not found
+        user = new User({
+          UserName: profile.displayName || profile.username,
+          UserEmail: profile.emails[0].value,
+          UserPassword: null, // Password is not needed for GitHub logins
+          timeWorked: 0,
+        });
+        await user.save();
+      }
+      return done(null, user);
+    } catch (error) {
+      console.error('Error during GitHub authentication:', error);
+      return done(error, null);
+    }
+  }
+));
+
+// Serialize and deserialize user
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+// Log Time Route
 router.post('/logTimes', async (req, res) => {
   const { email, timeWorked } = req.body;
 
@@ -19,8 +63,6 @@ router.post('/logTimes', async (req, res) => {
     user.timeWorked = user.timeWorked || 0; // Initialize if undefined
     user.timeWorked += timeWorked; // Now safe to add
 
-    user.timeWorked+=timeWorked;
-
     // Save the updated user document
     console.log('Saving updated user...');
     await user.save();
@@ -32,9 +74,6 @@ router.post('/logTimes', async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
-
-
-
 
 // Register User Route
 router.post('/register', async (req, res) => {
@@ -58,59 +97,15 @@ router.post('/register', async (req, res) => {
       UserPassword: password,
     });
 
-    const savedUser = await newUser.save();
+    await newUser.save();
     res.status(201).json({ message: 'User registered successfully!' });
 
   } catch (error) {
     console.error('Error registering user:', error);
-
-    if (error.code == 11000) {
-      return res.status(400).json({ message: 'Email already exists' });
-    }
-
-    res.status(500).json({ message: 'Server error' });
-  }
-}); 
-// Sign In Route
-router.post('/register', async (req, res) => {
-  console.log('Request Body:', req.body);
-
-  const { name, email, password } = req.body;
-
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: 'All fields are required' });
-  }
-
-  try {
-    User.findOne({ UserEmail: email }, function(err, user) {
-      if(err) {
-         return res.status(500).json({message: 'An error occurred while searching for the user.'});
-      }
-      if(user)
-      {
-        return res.status(400).json({message: 'Email already exists'});
-      }
-    }); 
-
-    const newUser = new User({
-      UserName: name,
-      UserEmail: email,
-      UserPassword: password,
-    });
-
-    const savedUser = await newUser.save();
-    res.status(201).json({ message: 'User registered successfully!' });
-
-  } catch (error) {
-    console.error('Error registering user:', error);
-
-    if (error.code == 11000) {
-      return res.status(400).json({ message: 'Email already exists' });
-    }
-
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 // Sign In Route
 router.post('/signIn', async (req, res) => {
   console.log('Request Body:', req.body); // Debugging
@@ -130,7 +125,7 @@ router.post('/signIn', async (req, res) => {
     }
 
     // Compare password (plain text comparison)
-    const isPasswordValid = password == user.UserPassword;
+    const isPasswordValid = password === user.UserPassword; // Use strict equality
 
     // If password is incorrect, return an error
     if (!isPasswordValid) {
@@ -153,6 +148,31 @@ router.post('/signIn', async (req, res) => {
   }
 });
 
+// GitHub Authentication Routes
+router.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
 
+router.get('/auth/callback',
+  passport.authenticate('github', { failureRedirect: '/' }),
+  (req, res) => {
+    // Successful authentication, redirect to your desired page.
+    res.redirect('/profile'); // Change this to your profile route or desired location
+  }
+);
+
+// Profile Route
+router.get('/profile', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/');
+  }
+  res.json({
+    message: 'Profile retrieved successfully',
+    user: {
+      id: req.user._id,
+      name: req.user.UserName,
+      email: req.user.UserEmail,
+      timeWorked: req.user.timeWorked,
+    },
+  });
+});
 
 module.exports = router;
