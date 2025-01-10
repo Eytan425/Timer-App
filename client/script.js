@@ -18,7 +18,7 @@ loginBtn.addEventListener('click', () => {
 
 // GitHub login function
 async function githubLogin() {
-  window.location.href = "http://localhost:5500/auth/callback"; // Ensure this matches your server's configuration
+  window.location.href = "http://localhost:3000/auth/github/callback"; // Ensure this matches your server's configuration
 }
 
 // Registration function
