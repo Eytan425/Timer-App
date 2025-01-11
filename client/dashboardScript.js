@@ -2,6 +2,7 @@ let totalTimeInDecimals;
 let timerId; // Store the timer ID
 let seconds = 0, minutes = 0, hours = 0; // Initialize counters
 let totalSeconds = 0, totalMinutes = 0, totalHours = 0;
+import { UserEmail} from "./script.js";
 
 //Get the signUpName
 const signUpName = localStorage.getItem('signUpName');
@@ -62,6 +63,7 @@ clockInBtn.addEventListener('click', async () => {
         // Calculate the total time worked in decimals
         totalTimeInDecimals = totalHours + (totalMinutes / 60) + (totalSeconds / 3600);
         timeText.innerHTML = `You worked today: ${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSeconds).padStart(2, '0')}`;
+        logTime(UserEmail, totalTimeInDecimals);
         console.log('Clocked Out');
         seconds = 0;
         minutes = 0;
