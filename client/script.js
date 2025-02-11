@@ -1,11 +1,3 @@
-const container = document.getElementById('container');
-const registerBtn = document.getElementById('register');
-const loginBtn = document.getElementById('login');
-const signUpBtn = document.getElementById('signUpBtn');
-const signInBtn = document.getElementById('signInBtn');
-const clockInBtn = document.getElementById('clockInBtn');
-const githubLoginBtn = document.getElementById('githubLoginBtn'); // New GitHub login button
-const timeText = document.getElementById('timeText'); // Display time summary
 export let UserEmail;
 
 export function setUserEmail(email) {
