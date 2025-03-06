@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // GitHub login function
     async function githubLogin() {
-        window.location.href = "http://localhost:3000/auth/github/callback"; // Ensure this matches your server's configuration
+        window.location.href = "http://localhost:3000/auth/github/callback"; 
     }
 
     // Registration function
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-
+//ReactNative or ReactIonic
     // Attach event listeners
     signUpBtn.addEventListener('click', register);
     signInBtn.addEventListener('click', signIn);

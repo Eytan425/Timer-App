@@ -57,10 +57,12 @@
       const user = await User.findOne({ UserEmail: email });
       if (!user) {
         console.log('User not found:', email);
-        return res.status(404).json({ message: "User not found!" });
+        alert("The email" +  email + "is not found");
+        //return res.status(404).json({ message: "User not found!" });
       }
 
       console.log('User found:', user);
+      
       user.timeWorked = user.timeWorked || 0; // Initialize if undefined
       user.timeWorked += timeWorked; // Now safe to add
 
