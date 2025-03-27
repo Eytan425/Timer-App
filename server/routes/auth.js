@@ -4,7 +4,7 @@ const GitHubStrategy = require('passport-github2').Strategy;
 const User = require('../models/User'); // Ensure correct path
 const router = express.Router();
 require('dotenv').config();
-
+//const { UserEmail} = require( "./script.js");
 
 // Replace these with your GitHub app credentials
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;

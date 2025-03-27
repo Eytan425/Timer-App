@@ -1,6 +1,6 @@
 export let UserEmail;
 
-export function setUserEmail(email) {
+function setUserEmail(email) {
     UserEmail = email;
 }
 
@@ -114,9 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-//ReactNative or ReactIonic
+
     // Attach event listeners
     signUpBtn.addEventListener('click', register);
     signInBtn.addEventListener('click', signIn);
     githubLoginBtn.addEventListener('click', githubLogin);
 });
+
+// module.exports = {UserEmail};
