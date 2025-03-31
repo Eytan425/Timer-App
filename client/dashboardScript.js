@@ -76,15 +76,14 @@ clockInBtn.addEventListener('click', async () => {
 // Function to log time to the server
 async function logTime(userEmail, totalTimeInDecimals) {
     console.log("Logging time for:", userEmail, "Time:", totalTimeInDecimals); // Debugging
-
     try {
-        const response = await fetch("http://localhost:3000/auth/logTimes", {
+        const response = await fetch("http://localhost:3000/user/auth/logTimes", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                UserEmail: userEmail,  // Ensure UserEmail is sent
+                UserEmail: userEmail,  
                 timeWorked: totalTimeInDecimals
             }),
         });
