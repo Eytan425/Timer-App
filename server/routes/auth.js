@@ -49,34 +49,38 @@ passport.deserializeUser((user, done) => {
 
 // Log Time Route
 router.post('/logTimes', async (req, res) => {
-  const { email, timeWorked } = req.body;
+  console.log("Received request:", req.body); // Debugging
+
+  const { UserEmail, timeWorked } = req.body;
+
+  if (!UserEmail) {
+      console.log("🚨 UserEmail is missing in request!");
+      return res.status(400).json({ message: "User email is required." });
+  }
 
   try {
-    console.log('Request received with:', req.body);
+      const user = await User.findOne({ UserEmail });
 
-    // Find the user by email
-    const user = await User.findOne({ UserEmail: email });
-    if (!user) {
-      console.log('User not found:', email);
-      return res.status(404).json({ message: "User not found!" });
-    }
+      if (!user) {
+          console.log("❌ User not found:", UserEmail);
+          return res.status(404).json({ message: "User not found!" });
+      }
 
-    console.log('User found:', user);
-    
-    user.timeWorked = user.timeWorked || 0; // Initialize if undefined
-    user.timeWorked += timeWorked; // Now safe to add
+      console.log("✅ User found:", user);
 
-    // Save the updated user document
-    console.log('Saving updated user...');
-    await user.save();
+      user.timeWorked = user.timeWorked || 0;
+      user.timeWorked += timeWorked || 0;
 
-    console.log('User updated successfully');
-    res.status(200).json({ message: "Logged time successfully!" });
+      await user.save();
+      console.log("✅ User updated successfully:", user);
+
+      res.status(200).json({ message: "Logged time successfully!" });
   } catch (error) {
-    console.error("Error logging time: ", error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+      console.error("❌ Error logging time:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
 
 // Register User Route
 router.post('/register', async (req, res) => {

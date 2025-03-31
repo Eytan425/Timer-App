@@ -74,24 +74,32 @@ clockInBtn.addEventListener('click', async () => {
 });
 
 // Function to log time to the server
-async function logTime(UserEmail, totalTimeInDecimals) {
+async function logTime(userEmail, totalTimeInDecimals) {
+    console.log("Logging time for:", userEmail, "Time:", totalTimeInDecimals); // Debugging
+
     try {
-        const response = await fetch("http://localhost:3000/user/auth/logTimes", {
+        const response = await fetch("http://localhost:3000/auth/logTimes", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email: UserEmail, timeWorked: totalTimeInDecimals }),
+            body: JSON.stringify({
+                UserEmail: userEmail,  // Ensure UserEmail is sent
+                timeWorked: totalTimeInDecimals
+            }),
         });
 
         const data = await response.json();
+        console.log("Server response:", data);
+
         if (response.ok) {
             alert("Logged time successfully!");
         } else {
-            alert(data.message || 'Failed to log time.');
+            alert(data.message || "Failed to log time.");
         }
     } catch (error) {
-        console.error("Error logging time: ", error);
-        alert("An error occurred while logging the time. Please try again.");
+        console.error("Error logging time:", error);
+        alert("An error occurred while logging time. Please try again.");
     }
 }
+
