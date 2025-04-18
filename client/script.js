@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const clockInBtn = document.getElementById('clockInBtn');
     const githubLoginBtn = document.getElementById('githubLoginBtn'); // New GitHub login button
     const timeText = document.getElementById('timeText'); // Display time summary
-    const bcrypt = require('bcrypt');
+    
 
     registerBtn.addEventListener('click', () => {
         container.classList.add("active");
@@ -33,16 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const signUpName = document.getElementById("signUpName").value;
         const signUpEmail = document.getElementById("signUpEmail").value;
         const signUpPassword = document.getElementById("signUpPassword").value;
+        
         const saltRounds = 10;
 
-        bcrypt.hash(signUpPassword, saltRounds, function (err, hashedPassword) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            console.log(hashedPassword);
-        });
-        try {
+        
+        try 
+        {
             const response = await fetch("http://localhost:3000/user/auth/register", {
                 method: "POST",
                 headers: {
@@ -51,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     name: signUpName,
                     email: signUpEmail,
-                    password: hashedPassword,
+                    password: signUpPassword,
                     timeWorked: 0,
                 }),
             });
