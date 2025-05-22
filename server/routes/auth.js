@@ -6,46 +6,6 @@ const router = express.Router();
 require('dotenv').config();
 //const { UserEmail} = require( "./script.js");
 
-// Replace these with your GitHub app credentials
-const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-
-// Configure GitHub strategy for use by Passport
-passport.use(new GitHubStrategy({
-    clientID: GITHUB_CLIENT_ID,
-    clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: 'http://localhost:3000/auth/github/callback' // Change this to your callback URL
-  },
-  async (accessToken, refreshToken, profile, done) => {
-    try {
-      // Check if the user already exists in the database
-      let user = await User.findOne({ UserEmail: profile.emails[0].value });
-      if (!user) {
-        // Create a new user if not found
-        user = new User({
-          UserName: profile.displayName || profile.username,
-          UserEmail: profile.emails[0].value,
-          UserPassword: null, // Password is not needed for GitHub logins
-          timeWorked: 0,
-        });
-        await user.save();
-      }
-      return done(null, user);
-    } catch (error) {
-      console.error('Error during GitHub authentication:', error);
-      return done(error, null);
-    }
-  }
-));
-
-// Serialize and deserialize user
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
 
 // Log Time Route
 router.post('/logTimes', async (req, res) => {
@@ -155,32 +115,5 @@ router.post('/signIn', async (req, res) => {
   }
 });
 
-// GitHub Authentication Routes
-router.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
-
-router.get('/auth/callback',
-  passport.authenticate('github', { failureRedirect: '/' }),
-  (req, res) => {
-    // Successful authentication, redirect to your desired page.
-    res.redirect('http://127.0.0.1:5500/client/index.html');
-// Change this to your profile route or desired location
-  }
-);
-
-// Profile Route
-router.get('/profile', (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.redirect('/');
-  }
-  res.json({
-    message: 'Profile retrieved successfully',
-    user: {
-      id: req.user._id,
-      name: req.user.UserName,
-      email: req.user.UserEmail,
-      timeWorked: req.user.timeWorked,
-    },
-  });
-});
 
 module.exports = router;

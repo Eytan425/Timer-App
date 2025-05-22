@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const signUpBtn = document.getElementById('signUpBtn');
     const signInBtn = document.getElementById('signInBtn');
     const clockInBtn = document.getElementById('clockInBtn');
-    const githubLoginBtn = document.getElementById('githubLoginBtn'); // New GitHub login button
     const timeText = document.getElementById('timeText'); // Display time summary
     
 
@@ -24,9 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // GitHub login function
-    async function githubLogin() {
-        window.location.href = "http://localhost:3000/auth/github/callback"; 
-    }
+    
 
     // Registration function
     async function register() {
@@ -123,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach event listeners
     signUpBtn.addEventListener('click', register);
     signInBtn.addEventListener('click', signIn);
-    githubLoginBtn.addEventListener('click', githubLogin);
 });
 
 // module.exports = {UserEmail};
