@@ -1,6 +1,6 @@
 // script.js
 
-const baseURL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://timer-app-ka3v.onrender.com';
+const baseURL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://timer-app-079v.onrender.com';
 
 function setUserEmail(email) {
     localStorage.setItem('userEmail', email);
