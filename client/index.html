@@ -2,16 +2,18 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
     <title>Punch Clock App</title>
-    <link rel="icon" type="image/x-icon" href="/images/clockIcon.ico">
+    <link rel="icon" type="image/x-icon" href="/images/clockIcon.ico" />
 </head>
 
 <body>
-
     <div class="container" id="container">
         <div class="form-container sign-up">
             <form>
@@ -25,13 +27,13 @@
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
                 <span>or use your email for registeration</span>
-                <input type="text" id = "signUpName" placeholder="Name">
-                <input type="email" id = "signUpEmail" placeholder="Email">
-                <input type="password" id ="signUpPassword" placeholder="Password">
-                <input type = "button" id = "signUpBtn" class = "button" value = "Sign Up">
-                
+                <input type="text" id="signUpName" placeholder="Name" />
+                <input type="email" id="signUpEmail" placeholder="Email" />
+                <input type="password" id="signUpPassword" placeholder="Password" />
+                <input type="button" id="signUpBtn" class="button" value="Sign Up" />
             </form>
         </div>
+
         <script>
             document.getElementById('signUpBtn').addEventListener('click', () => {
                 const signUpName = document.getElementById('signUpName').value;
@@ -42,6 +44,7 @@
                 }
             });
         </script>
+
         <div class="form-container sign-in">
             <form>
                 <h1>Sign In</h1>
@@ -53,33 +56,32 @@
                     </a>
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
-                
+
                 <span>or use your email password</span>
-                <input type="email" id = "signInEmail" placeholder="Email">
-                <input type="password" id= "signInPassword" placeholder="Password">
+                <input type="email" id="signInEmail" placeholder="Email" />
+                <input type="password" id="signInPassword" placeholder="Password" />
                 <a href="#">Forget Your Password?</a>
-                <input type = "button" id = "signInBtn" class = "button" value = "Sign In">
-                <p><span id = "timeText"></span></p>
+                <input type="button" id="signInBtn" class="button" value="Sign In" />
+                <p><span id="timeText"></span></p>
             </form>
         </div>
+
         <div class="toggle-container">
             <div class="toggle">
                 <div class="toggle-panel toggle-left">
                     <h1>Welcome Back!</h1>
                     <p>Enter your personal details to use all of site features</p>
-                    <button class="hidden" id="login">Sign In</button>
+                    <button id="login">Sign In</button>
                 </div>
                 <div class="toggle-panel toggle-right">
                     <h1>Hello, Friend!</h1>
                     <p>Register with your personal details to use all of site features</p>
-                    <button class="hidden" id="register">Sign Up</button>
+                    <button id="register">Sign Up</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script type = "module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
-
-
 </html>

@@ -1,4 +1,4 @@
-//  const express = require('express');
+// const express = require('express');
 // const mongoose = require('mongoose');
 // const path = require('path');
 // const authRoutes = require('./server/routes/auth.js');
@@ -10,7 +10,11 @@
 
 // // Use CORS middleware
 // app.use(cors({
-//   origin: ['http://localhost:5500', 'http://127.0.0.1:5500'], // adjust as needed for dev
+//   origin: [
+//     'http://localhost:5500',
+//     'http://127.0.0.1:5500',
+//     'https://timer-app-ka3v.onrender.com' // Added deployed frontend URL
+//   ],
 //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 //   credentials: true 
 // }));
@@ -42,8 +46,9 @@
 
 // // Start server
 // app.listen(port, () => {
-//   console.log(`Server listening at http://localhost:${port}`);
+//   console.log(`Server listening on port ${port}`);
 // });
+
 
 
 const express = require('express');
@@ -56,16 +61,17 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Use CORS middleware
-app.use(cors({
-  origin: [
-    'http://localhost:5500',
-    'http://127.0.0.1:5500',
-    'https://timer-app-ka3v.onrender.com' // Added deployed frontend URL
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true 
-}));
+// Enable CORS only in development
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors({
+    origin: [
+      'http://localhost:5500',
+      'http://127.0.0.1:5500',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  }));
+}
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -75,18 +81,23 @@ mongoose.connect(process.env.MONGODB_URI)
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
-// Serve static frontend files
+// Serve static frontend files (HTML, JS, CSS, etc.)
 app.use(express.static(path.join(__dirname, 'client')));
 
-// Main frontend route
+// Serve index.html at root
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'index.html'));
 });
 
-// API routes
+// Serve dashboard.html at /dashboard
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dashboard.html'));
+});
+
+// API routes for auth
 app.use('/user/auth', authRoutes);
 
-// Error handler
+// Error handler middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');

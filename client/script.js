@@ -1,8 +1,13 @@
-export let UserEmail = null;
+// script.js
+
+const baseURL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://timer-app-ka3v.onrender.com';
 
 function setUserEmail(email) {
-    UserEmail = email;
     localStorage.setItem('userEmail', email);
+}
+
+function getUserEmail() {
+    return localStorage.getItem('userEmail');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,8 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const signUpBtn = document.getElementById('signUpBtn');
     const signInBtn = document.getElementById('signInBtn');
     const clockInBtn = document.getElementById('clockInBtn');
-    const timeText = document.getElementById('timeText'); // Display time summary
-    
 
     registerBtn.addEventListener('click', () => {
         container.classList.add("active");
@@ -23,17 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
         container.classList.remove("active");
     });
 
-    // GitHub login function
-    
-
-    // Registration function
     async function register() {
         const signUpName = document.getElementById("signUpName").value;
         const signUpEmail = document.getElementById("signUpEmail").value;
         const signUpPassword = document.getElementById("signUpPassword").value;
-        try 
-        {
-            const response = await fetch("http://localhost:3000/user/auth/register", {
+        try {
+            const response = await fetch(`${baseURL}/user/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -58,13 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Sign-in function
     async function signIn() {
         const signInEmail = document.getElementById('signInEmail').value;
         const signInPassword = document.getElementById('signInPassword').value;
 
         try {
-            const response = await fetch("http://localhost:3000/user/auth/signIn", {
+            const response = await fetch(`${baseURL}/user/auth/signIn`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -75,11 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             if (response.ok) {
                 setUserEmail(signInEmail);
-                console.log("User Data:", data);
                 window.location.href = 'dashboard.html';
             } else {
                 alert(data.message || 'Invalid credentials');
-                clockInBtn.setAttribute("hidden", 'true'); // Hide the clock in button if login fails
+                clockInBtn.setAttribute("hidden", 'true');
             }
         } catch (error) {
             console.error("Error signing in:", error);
@@ -90,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener("keydown", async function(event) {
         if (event.key === "Enter") {
             const activeElement = document.activeElement;
-            if (activeElement.id === "signUpName" || activeElement.id === "signUpEmail" || activeElement.id === "signUpPassword") {
+            if (["signUpName", "signUpEmail", "signUpPassword"].includes(activeElement.id)) {
                 const signUpName = document.getElementById("signUpName").value;
                 const signUpEmail = document.getElementById("signUpEmail").value;
                 const signUpPassword = document.getElementById("signUpPassword").value;
@@ -100,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     alert("Please fill in all fields.");
                 }
-            } else if (activeElement.id === "signInEmail" || activeElement.id === "signInPassword") {
+            } else if (["signInEmail", "signInPassword"].includes(activeElement.id)) {
                 const signInEmail = document.getElementById('signInEmail').value;
                 const signInPassword = document.getElementById('signInPassword').value;
 
@@ -113,10 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Attach event listeners
     signUpBtn.addEventListener('click', register);
     signInBtn.addEventListener('click', signIn);
-    
 });
-
-// module.exports = {UserEmail};
