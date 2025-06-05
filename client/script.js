@@ -78,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             if (response.ok) {
                 setUserEmail(signInEmail);
-                clockInBtn.removeAttribute("hidden"); // Show the clock in button
                 console.log("User Data:", data);
                 window.location.href = 'dashboard.html';
             } else {
