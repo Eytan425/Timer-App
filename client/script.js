@@ -1,7 +1,8 @@
-export let UserEmail;
+export let UserEmail = null;
 
 function setUserEmail(email) {
     UserEmail = email;
+    localStorage.setItem('userEmail', email);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -30,10 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const signUpName = document.getElementById("signUpName").value;
         const signUpEmail = document.getElementById("signUpEmail").value;
         const signUpPassword = document.getElementById("signUpPassword").value;
-        
-        const saltRounds = 10;
-
-        
         try 
         {
             const response = await fetch("http://localhost:3000/user/auth/register", {
@@ -119,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach event listeners
     signUpBtn.addEventListener('click', register);
     signInBtn.addEventListener('click', signIn);
+    
 });
 
 // module.exports = {UserEmail};

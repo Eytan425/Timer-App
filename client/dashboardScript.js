@@ -1,8 +1,14 @@
 let totalTimeInDecimals;
 let timerId; // Store the timer ID
-let seconds = 0, minutes = 0, hours = 0; // Initialize counters
+let startTime; // Store the start time
 let totalSeconds = 0, totalMinutes = 0, totalHours = 0;
-import { UserEmail} from "./script.js";
+import { UserEmail } from './script.js';
+
+// Get the user email from localStorage
+const userEmail = localStorage.getItem('userEmail');
+if (!userEmail) {
+    window.location.href = 'index.html'; // Redirect to login if no email found
+}
 
 //Get the signUpName
 const signUpName = localStorage.getItem('signUpName');
@@ -20,37 +26,77 @@ signOutBtn.addEventListener('click', () => {
         alert('Please clock out before signing out');
 });
 
+// Function to format time
+function formatTime(hours, minutes, seconds) {
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+// Function to update the display
+function updateDisplay(elapsedTime) {
+    const hours = Math.floor(elapsedTime / 3600000);
+    const minutes = Math.floor((elapsedTime % 3600000) / 60000);
+    const seconds = Math.floor((elapsedTime % 60000) / 1000);
+    timeText.innerHTML = `Time Worked: ${formatTime(hours, minutes, seconds)}`;
+}
+
+// Function to fetch existing time from database
+async function fetchExistingTime() {
+    try {
+        const response = await fetch(`http://localhost:3000/user/auth/getTime?email=${userEmail}`);
+        const data = await response.json();
+        if (response.ok) {
+            // Convert decimal hours to hours, minutes, seconds
+            const totalHours = Math.floor(data.timeWorked);
+            const totalMinutes = Math.floor((data.timeWorked % 1) * 60);
+            const totalSeconds = Math.floor(((data.timeWorked % 1) * 60 % 1) * 60);
+            
+            // Update our total time variables
+            totalHours = totalHours;
+            totalMinutes = totalMinutes;
+            totalSeconds = totalSeconds;
+            
+            // Update display with existing time
+            timeText.innerHTML = `Total time worked: ${formatTime(totalHours, totalMinutes, totalSeconds)}`;
+        }
+    } catch (error) {
+        console.error("Error fetching existing time:", error);
+    }
+}
+
+// Fetch existing time when page loads
+fetchExistingTime();
+
 //Clock in
 clockInBtn.addEventListener('click', async () => {
     if (clockInBtn.value === "Clock In") {
+        startTime = new Date();
         
-        // Start the timer for the session
+        // Update the timer display every second
         timerId = setInterval(() => {
-            seconds++;
-            if (seconds === 60) {
-                minutes++;
-                seconds = 0;
-            }
-            if (minutes === 60) {
-                hours++;
-                minutes = 0;
-            }
-            
-            // Update the timer display in real-time
-            timeText.innerHTML = `Time Worked: ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            const currentTime = new Date();
+            const elapsedTime = currentTime - startTime;
+            updateDisplay(elapsedTime);
         }, 1000);
 
         clockInBtn.value = "Clock Out";
     }
-    else
-    {
-        // Stop the timer and accumulate time
+    else {
+        // Stop the timer
         clearInterval(timerId);
-        totalSeconds += seconds;
-        totalMinutes += minutes;
-        totalHours += hours;
+        const endTime = new Date();
+        const sessionTime = endTime - startTime;
+        
+        // Convert session time to hours, minutes, seconds
+        const sessionHours = Math.floor(sessionTime / 3600000);
+        const sessionMinutes = Math.floor((sessionTime % 3600000) / 60000);
+        const sessionSeconds = Math.floor((sessionTime % 60000) / 1000);
+        
+        // Add to total time
+        totalSeconds += sessionSeconds;
+        totalMinutes += sessionMinutes;
+        totalHours += sessionHours;
 
-        // Handle overflow of seconds and minutes
+        // Handle overflow
         if (totalSeconds >= 60) {
             totalMinutes += Math.floor(totalSeconds / 60);
             totalSeconds %= 60;
@@ -60,16 +106,17 @@ clockInBtn.addEventListener('click', async () => {
             totalMinutes %= 60;
         }
 
-        // Calculate the total time worked in decimals
+        // Calculate total time in decimals
         totalTimeInDecimals = totalHours + (totalMinutes / 60) + (totalSeconds / 3600);
-        timeText.innerHTML = `You worked today: ${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSeconds).padStart(2, '0')}`;
-        logTime(UserEmail, totalTimeInDecimals);
-        console.log('Clocked Out');
-        seconds = 0;
-        minutes = 0;
-        hours = 0; // Reset session counters
-        clockInBtn.value = "Clock In";
         
+        // Update display with total time
+        timeText.innerHTML = `Total time worked: ${formatTime(totalHours, totalMinutes, totalSeconds)}`;
+        
+        // Log the time
+        logTime(userEmail, totalTimeInDecimals);
+        console.log('Clocked Out');
+        
+        clockInBtn.value = "Clock In";
     }
 });
 
