@@ -1,6 +1,6 @@
 // dashboardScript.js
 
-const baseURL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://timer-app-ka3v.onrender.com';
+const baseURL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://timer-app-079v.onrender.com/';
 
 let totalHours = 0, totalMinutes = 0, totalSeconds = 0;
 let timerId; // Store the timer ID
