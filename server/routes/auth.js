@@ -4,6 +4,7 @@ const GitHubStrategy = require('passport-github2').Strategy;
 const User = require('../models/User'); // Ensure correct path
 const router = express.Router();
 require('dotenv').config();
+const bcrypt = require('bcrypt');
 //const { UserEmail} = require( "./script.js");
 
 
@@ -73,6 +74,10 @@ router.post('/register', async (req, res) => {
   }
 });
 
+async function isPasswordValid(plainPassword, hashedPassword) {
+    return await bcrypt.compare(plainPassword, hashedPassword);
+}
+
 // Sign In Route
 router.post('/signIn', async (req, res) => {
   console.log('Request Body:', req.body); // Debugging
@@ -92,7 +97,7 @@ router.post('/signIn', async (req, res) => {
     }
 
     // Compare password (plain text comparison)
-    const isPasswordValid = password === user.UserPassword; // Use strict equality
+    const isPasswordValid = await isPasswordValid(password, user.UserPassword);
 
     // If password is incorrect, return an error
     if (!isPasswordValid) {
