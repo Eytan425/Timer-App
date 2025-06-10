@@ -61,6 +61,13 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
+    //Validate Password
+    let regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/;
+    if(regex.test(password) == false)
+    {
+      alert("Password doesn't meet the requirements");
+      return res.status(400).json({ message: 'Password doesn\'t meet the requirements' });
+    }
     // Hash the password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);

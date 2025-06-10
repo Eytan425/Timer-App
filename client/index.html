@@ -28,8 +28,11 @@
                 </div>
                 <span>or use your email for registeration</span>
                 <input type="text" id="signUpName" placeholder="Name" />
-                <input type="email" id="signUpEmail" placeholder="Email" />
+                <input type="email" id="signUpEmail" placeholder="e.g. johndoe@example.com" />
                 <input type="password" id="signUpPassword" placeholder="Password" />
+                <small style="color: #666; font-size: 12px; margin-top: -5px; margin-bottom: 10px;">
+                    Password must be 8-15 characters with uppercase, lowercase, number, and special character
+                </small>
                 <input type="button" id="signUpBtn" class="button" value="Sign Up" />
             </form>
         </div>
@@ -58,7 +61,7 @@
                 </div>
 
                 <span>or use your email password</span>
-                <input type="email" id="signInEmail" placeholder="Email" />
+                <input type="email" id="signInEmail" placeholder="e.g. johndoe@example.com" />
                 <input type="password" id="signInPassword" placeholder="Password" />
                 <a href="#">Forget Your Password?</a>
                 <input type="button" id="signInBtn" class="button" value="Sign In" />

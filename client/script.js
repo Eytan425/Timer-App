@@ -9,6 +9,11 @@ function getUserEmail() {
     return localStorage.getItem('userEmail');
 }
 
+function valid(email) {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return pattern.test(email);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('container');
     const registerBtn = document.getElementById('register');
@@ -29,6 +34,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const signUpName = document.getElementById("signUpName").value;
         const signUpEmail = document.getElementById("signUpEmail").value;
         const signUpPassword = document.getElementById("signUpPassword").value;
+
+        // Validate email
+        if (!valid(signUpEmail)) {
+            alert("Please enter a valid email address");
+            return;
+        }
+
+        // Validate password on client side
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/;
+        if (!passwordRegex.test(signUpPassword)) {
+            alert("Password must be 8-15 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@.#$!%*?&)");
+            return;
+        }
 
         try {
             const response = await fetch(`${baseURL}/user/auth/register`, {
@@ -59,6 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
     async function signIn() {
         const signInEmail = document.getElementById('signInEmail').value;
         const signInPassword = document.getElementById('signInPassword').value;
+
+        // Validate email
+        if (!valid(signInEmail)) {
+            alert("Please enter a valid email address");
+            return;
+        }
 
         try {
             const response = await fetch(`${baseURL}/user/auth/signIn`, {
