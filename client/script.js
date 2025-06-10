@@ -1,5 +1,4 @@
 // script.js
-const bcrypt = require('bcrypt');
 const baseURL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://timer-app-079v.onrender.com';
 
 function setUserEmail(email) {
@@ -31,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const signUpEmail = document.getElementById("signUpEmail").value;
         const signUpPassword = document.getElementById("signUpPassword").value;
 
-        const hashedPass = await encryptPass(signUpPassword);
         try {
             const response = await fetch(`${baseURL}/user/auth/register`, {
                 method: "POST",
@@ -41,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     name: signUpName,
                     email: signUpEmail,
-                    password: hashedPass,
+                    password: signUpPassword,
                     timeWorked: 0,
                 }),
             });
@@ -77,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'dashboard.html';
             } else {
                 alert(data.message || 'Invalid credentials');
-                clockInBtn.setAttribute("hidden", 'true');
             }
         } catch (error) {
             console.error("Error signing in:", error);
@@ -110,18 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-    async function encryptPass(userPassword)
-    {
-        try {
-            const saltRounds = 10;
-            const salt = await bcrypt.genSalt(saltRounds);
-            const hash = await bcrypt.hash(userPassword, salt);
-            return hash;
-        } catch (err) {
-            console.error("Error while hashing password:", err);
-            throw err;
-        }
-    }
 
     signUpBtn.addEventListener('click', register);
     signInBtn.addEventListener('click', signIn);

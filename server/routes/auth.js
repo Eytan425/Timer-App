@@ -50,27 +50,35 @@ router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
+    console.log('Missing fields:', { name: !!name, email: !!email, password: !!password });
     return res.status(400).json({ message: 'All fields are required' });
   }
 
   try {
     const existingUser = await User.findOne({ UserEmail: email });
     if (existingUser) {
+      console.log('User already exists:', email);
       return res.status(400).json({ message: 'Email already exists' });
     }
+
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const newUser = new User({
       UserName: name,
       UserEmail: email,
-      UserPassword: password,
+      UserPassword: hashedPassword,
+      timeWorked: 0
     });
 
     await newUser.save();
+    console.log('User registered successfully:', email);
     res.status(201).json({ message: 'User registered successfully!' });
 
   } catch (error) {
     console.error('Error registering user:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
@@ -80,31 +88,34 @@ async function isPasswordValid(plainPassword, hashedPassword) {
 
 // Sign In Route
 router.post('/signIn', async (req, res) => {
-  console.log('Request Body:', req.body); // Debugging
+  console.log('Sign In Request Body:', req.body);
 
   const { email, password } = req.body;
 
   if (!email || !password) {
+    console.log('Missing fields in sign in:', { email: !!email, password: !!password });
     return res.status(400).json({ message: 'All fields are required' });
   }
 
   try {
-    // Fetch user by email (must await the findOne operation)
+    // Fetch user by email
     const user = await User.findOne({ UserEmail: email });
     
     if (!user) {
+      console.log('User not found:', email);
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    // Compare password (plain text comparison)
-    const isPasswordValid = await isPasswordValid(password, user.UserPassword);
+    // Compare password
+    const isPasswordValid = await bcrypt.compare(password, user.UserPassword);
 
-    // If password is incorrect, return an error
     if (!isPasswordValid) {
+      console.log('Invalid password for user:', email);
       return res.status(400).json({ message: 'Invalid email or password' });
     }
     
     // Successful login response
+    console.log('User signed in successfully:', email);
     res.status(200).json({
       message: 'Login successful',
       user: {
@@ -116,7 +127,7 @@ router.post('/signIn', async (req, res) => {
 
   } catch (error) {
     console.error('Error signing in:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
