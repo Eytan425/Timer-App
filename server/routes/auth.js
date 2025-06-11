@@ -5,6 +5,7 @@ const User = require('../models/User'); // Ensure correct path
 const router = express.Router();
 require('dotenv').config();
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 //const { UserEmail} = require( "./script.js");
 
 
@@ -138,5 +139,42 @@ router.post('/signIn', async (req, res) => {
   }
 });
 
+
+
+router.post('/requestCode', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const resetCode = Math.floor(100000 + Math.random() * 900000);
+    user.resetCode = resetCode;
+    user.resetCodeExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+    await user.save();
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Password Reset Code',
+      text: `Your password reset code is: ${resetCode}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Reset code sent!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error sending reset code' });
+  }
+});
 
 module.exports = router;

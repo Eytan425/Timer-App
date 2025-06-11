@@ -1,4 +1,3 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -40,6 +39,8 @@ app.get('/', (req, res) => {
 app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'dashboard.html'));
 });
+
+
 
 // API routes for auth
 app.use('/user/auth', authRoutes);

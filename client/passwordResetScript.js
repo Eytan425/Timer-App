@@ -1,3 +1,6 @@
+const baseURL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://timer-app-079v.onrender.com';
+
+
 class ResetPasswordFlow {
     constructor() {
         this.currentStep = 'email';
@@ -11,25 +14,21 @@ class ResetPasswordFlow {
     }
 
     bindEvents() {
-        // Email form
         document.getElementById('emailForm').addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleEmailSubmit();
         });
 
-        // Code form
         document.getElementById('codeForm').addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleCodeSubmit();
         });
 
-        // Password form
         document.getElementById('passwordForm').addEventListener('submit', (e) => {
             e.preventDefault();
             this.handlePasswordSubmit();
         });
 
-        // Back buttons
         document.getElementById('backToEmail').addEventListener('click', () => {
             this.showStep('email');
         });
@@ -38,23 +37,16 @@ class ResetPasswordFlow {
             this.showStep('code');
         });
 
-        // Continue button
         document.getElementById('continueBtn').addEventListener('click', () => {
             window.location.href = '/login';
         });
 
-        // Verification code input
         const codeInput = document.getElementById('verificationCode');
         codeInput.addEventListener('input', (e) => {
-            // Only allow numbers
             e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
-            
-            // Enable/disable submit button
-            const submitBtn = document.getElementById('codeBtn');
-            submitBtn.disabled = e.target.value.length !== 6;
+            document.getElementById('codeBtn').disabled = e.target.value.length !== 6;
         });
 
-        // Password visibility toggles
         document.querySelectorAll('.toggle-password').forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -62,19 +54,16 @@ class ResetPasswordFlow {
             });
         });
 
-        // Resend code button
         document.querySelector('.resend-btn').addEventListener('click', () => {
             this.resendCode();
         });
     }
 
     showStep(step) {
-        // Hide all steps
         document.querySelectorAll('.form-container').forEach(container => {
             container.classList.remove('active');
         });
 
-        // Show current step
         const stepElement = document.getElementById(`${step}Step`);
         if (stepElement) {
             setTimeout(() => {
@@ -89,30 +78,36 @@ class ResetPasswordFlow {
         const email = document.getElementById('email').value.trim();
         const emailError = document.getElementById('emailError');
         const submitBtn = document.getElementById('emailBtn');
-        
-        // Clear previous errors
+
         emailError.textContent = '';
         document.getElementById('email').classList.remove('error');
 
-        // Validate email
         if (!this.validateEmail(email)) {
             emailError.textContent = 'Please enter a valid email address';
             document.getElementById('email').classList.add('error');
             return;
         }
 
-        // Show loading state
         this.setButtonLoading(submitBtn, true);
 
         try {
-            // Simulate API call
-            await this.delay(1500);
-            
+            const response = await fetch(`${baseURL}/user/auth/requestCode`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to send verification code');
+            }
+
             this.userEmail = email;
             document.getElementById('emailDisplay').textContent = email;
             this.showStep('code');
         } catch (error) {
-            emailError.textContent = 'Something went wrong. Please try again.';
+            emailError.textContent = error.message || 'Something went wrong. Please try again.';
         } finally {
             this.setButtonLoading(submitBtn, false);
         }
@@ -122,8 +117,7 @@ class ResetPasswordFlow {
         const code = document.getElementById('verificationCode').value;
         const codeError = document.getElementById('codeError');
         const submitBtn = document.getElementById('codeBtn');
-        
-        // Clear previous errors
+
         codeError.textContent = '';
         document.getElementById('verificationCode').classList.remove('error');
 
@@ -133,16 +127,27 @@ class ResetPasswordFlow {
             return;
         }
 
-        // Show loading state
         this.setButtonLoading(submitBtn, true);
 
         try {
-            // Simulate API call
-            await this.delay(1500);
-            
+            const response = await fetch('http://localhost:3000/user/reset/verify-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: this.userEmail,
+                    code
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Invalid verification code');
+            }
+
             this.showStep('password');
         } catch (error) {
-            codeError.textContent = 'Invalid verification code. Please try again.';
+            codeError.textContent = error.message || 'Invalid verification code. Please try again.';
         } finally {
             this.setButtonLoading(submitBtn, false);
         }
@@ -154,8 +159,7 @@ class ResetPasswordFlow {
         const passwordError = document.getElementById('passwordError');
         const confirmPasswordError = document.getElementById('confirmPasswordError');
         const submitBtn = document.getElementById('passwordBtn');
-        
-        // Clear previous errors
+
         passwordError.textContent = '';
         confirmPasswordError.textContent = '';
         document.getElementById('newPassword').classList.remove('error');
@@ -163,14 +167,12 @@ class ResetPasswordFlow {
 
         let hasError = false;
 
-        // Validate password
         if (!this.validatePassword(newPassword)) {
             passwordError.textContent = 'Password must be at least 8 characters long';
             document.getElementById('newPassword').classList.add('error');
             hasError = true;
         }
 
-        // Validate password confirmation
         if (newPassword !== confirmPassword) {
             confirmPasswordError.textContent = 'Passwords do not match';
             document.getElementById('confirmPassword').classList.add('error');
@@ -179,16 +181,27 @@ class ResetPasswordFlow {
 
         if (hasError) return;
 
-        // Show loading state
         this.setButtonLoading(submitBtn, true);
 
         try {
-            // Simulate API call
-            await this.delay(1500);
-            
+            const response = await fetch('http://localhost:3000/user/reset/update-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: this.userEmail,
+                    newPassword
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to reset password');
+            }
+
             this.showStep('success');
         } catch (error) {
-            passwordError.textContent = 'Something went wrong. Please try again.';
+            passwordError.textContent = error.message || 'Something went wrong. Please try again.';
         } finally {
             this.setButtonLoading(submitBtn, false);
         }
@@ -197,21 +210,23 @@ class ResetPasswordFlow {
     async resendCode() {
         const resendBtn = document.querySelector('.resend-btn');
         const originalText = resendBtn.textContent;
-        
+
         resendBtn.textContent = 'Sending...';
         resendBtn.disabled = true;
 
         try {
-            // Simulate API call
-            await this.delay(1000);
+            const response = await fetch('http://localhost:3000/user/reset/request-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: this.userEmail })
+            });
+
+            if (!response.ok) throw new Error();
+
             resendBtn.textContent = 'Code sent!';
-            
-            setTimeout(() => {
-                resendBtn.textContent = originalText;
-                resendBtn.disabled = false;
-            }, 2000);
         } catch (error) {
             resendBtn.textContent = 'Failed to send';
+        } finally {
             setTimeout(() => {
                 resendBtn.textContent = originalText;
                 resendBtn.disabled = false;
@@ -259,13 +274,8 @@ class ResetPasswordFlow {
     validatePassword(password) {
         return password.length >= 8;
     }
-
-    delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
 }
 
-// Initialize the reset password flow when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     new ResetPasswordFlow();
 });
