@@ -215,7 +215,7 @@ class ResetPasswordFlow {
         resendBtn.disabled = true;
 
         try {
-            const response = await fetch(`${baseURL}/user/auth/reset/request-code`, {
+            const response = await fetch(`${baseURL}/user/auth/requestCode`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: this.userEmail })
