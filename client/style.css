@@ -212,3 +212,19 @@ body{
     transform: translateX(200%);
 }
 
+.error-message {
+    color: #e74c3c;
+    font-size: 12px;
+    text-align: left;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 16px;
+}
+.error-message:before {
+    content: "⚠";
+    font-size: 10px;
+}
+

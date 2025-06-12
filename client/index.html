@@ -33,6 +33,7 @@
                 <small style="color: #666; font-size: 12px; margin-top: -5px; margin-bottom: 10px;">
                     Password must be 8-15 characters with uppercase, lowercase, number, and special character
                 </small>
+                <div class="error-message" id="signUpError"></div>
                 <input type="button" id="signUpBtn" class="button" value="Sign Up" />
             </form>
         </div>
@@ -40,10 +41,13 @@
         <script>
             document.getElementById('signUpBtn').addEventListener('click', () => {
                 const signUpName = document.getElementById('signUpName').value;
+                const signUpError = document.getElementById('signUpError');
+                signUpError.textContent = ''; // Clear previous error message
+
                 if (signUpName) {
                     localStorage.setItem('signUpName', signUpName);
                 } else {
-                    alert('Please enter your name.');
+                    signUpError.textContent = 'Please enter your name.';
                 }
             });
         </script>
@@ -63,6 +67,7 @@
                 <span>or use your email password</span>
                 <input type="email" id="signInEmail" placeholder="e.g. johndoe@example.com" />
                 <input type="password" id="signInPassword" placeholder="Password" />
+                <div class="error-message" id="signInError"></div>
                 <input type="button" id="signInBtn" class="button" value="Sign In" />
                 <a href="#" onclick="window.location.href='passwordReset.html'" style="margin-top: 10px;">Forgot Your Password?</a>
                 <p><span id="timeText"></span></p>

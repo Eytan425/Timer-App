@@ -38,7 +38,7 @@ class ResetPasswordFlow {
         });
 
         document.getElementById('continueBtn').addEventListener('click', () => {
-            window.location.href = '/login';
+            window.location.href = 'index.html';
         });
 
         const codeInput = document.getElementById('verificationCode');
@@ -130,7 +130,7 @@ class ResetPasswordFlow {
         this.setButtonLoading(submitBtn, true);
 
         try {
-            const response = await fetch('http://localhost:3000/user/reset/verify-code', {
+            const response = await fetch(`${baseURL}/user/auth/reset/verifyCode`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -184,7 +184,7 @@ class ResetPasswordFlow {
         this.setButtonLoading(submitBtn, true);
 
         try {
-            const response = await fetch('http://localhost:3000/user/reset/update-password', {
+            const response = await fetch(`${baseURL}/user/auth/reset/update-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -215,7 +215,7 @@ class ResetPasswordFlow {
         resendBtn.disabled = true;
 
         try {
-            const response = await fetch('http://localhost:3000/user/reset/request-code', {
+            const response = await fetch(`${baseURL}/user/auth/reset/request-code`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: this.userEmail })

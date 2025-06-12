@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 //const { UserEmail} = require( "./script.js");
 
+const VerificationCode = require('../models/VerificationCode'); // adjust path as needed
 
 // Log Time Route
 router.post('/logTimes', async (req, res) => {
@@ -145,14 +146,16 @@ router.post('/requestCode', async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-
+    const user = await User.findOne({ UserEmail: email });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    const resetCode = Math.floor(100000 + Math.random() * 900000);
-    user.resetCode = resetCode;
-    user.resetCodeExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
-    await user.save();
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    // Upsert the code in VerificationCode collection
+    await VerificationCode.findOneAndUpdate(
+      { email },
+      { code: resetCode, expiresAt: new Date(Date.now() + 10 * 60 * 1000) },
+      { upsert: true, new: true }
+    );
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -176,5 +179,70 @@ router.post('/requestCode', async (req, res) => {
     res.status(500).json({ message: 'Error sending reset code' });
   }
 });
+// routes/user.js or wherever you define your user-related routes
+
+
+
+// POST /user/reset/verify-code
+router.post('/reset/verifyCode', async (req, res) => {
+    const { email, code } = req.body;
+
+    if (!email || !code) {
+        return res.status(400).json({ message: 'Email and code are required.' });
+    }
+
+    try {
+        const record = await VerificationCode.findOne({ email });
+
+        if (!record) {
+            return res.status(400).json({ message: 'No verification code found for this email.' });
+        }
+
+        const now = new Date();
+        if (record.expiresAt < now) {
+            return res.status(400).json({ message: 'Verification code has expired.' });
+        }
+
+        if (record.code !== code) {
+            return res.status(400).json({ message: 'Incorrect verification code.' });
+        }
+
+        return res.status(200).json({ message: 'Verification successful.' });
+    } catch (error) {
+        console.error('Verification error:', error);
+        res.status(500).json({ message: 'Server error during code verification.' });
+    }
+});
+
+// POST /user/auth/reset/update-password
+router.post('/reset/update-password', async (req, res) => {
+    const { email, newPassword } = req.body;
+    if (!email || !newPassword) {
+        return res.status(400).json({ message: 'Email and new password are required.' });
+    }
+    try {
+        // Check if a valid verification code exists for this email
+        const record = await VerificationCode.findOne({ email });
+        if (!record) {
+            return res.status(400).json({ message: 'No valid verification code found. Please request a new code.' });
+        }
+        // Update the user's password
+        const user = await User.findOne({ UserEmail: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        user.UserPassword = hashedPassword;
+        await user.save();
+        // Remove the verification code after successful password reset
+        await VerificationCode.deleteOne({ email });
+        res.status(200).json({ message: 'Password updated successfully.' });
+    } catch (error) {
+        console.error('Error updating password:', error);
+        res.status(500).json({ message: 'Server error during password update.' });
+    }
+});
 
 module.exports = router;
+

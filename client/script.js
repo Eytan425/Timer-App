@@ -22,29 +22,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const signInBtn = document.getElementById('signInBtn');
     const clockInBtn = document.getElementById('clockInBtn');
 
+    // Add error message containers if not present
+    let signUpError = document.getElementById('signUpError');
+    if (!signUpError) {
+        signUpError = document.createElement('div');
+        signUpError.id = 'signUpError';
+        signUpError.className = 'error-message';
+        const signUpForm = document.getElementById('signUpBtn').closest('form');
+        signUpForm.insertBefore(signUpError, document.getElementById('signUpBtn'));
+    }
+    let signInError = document.getElementById('signInError');
+    if (!signInError) {
+        signInError = document.createElement('div');
+        signInError.id = 'signInError';
+        signInError.className = 'error-message';
+        const signInForm = document.getElementById('signInBtn').closest('form');
+        signInForm.insertBefore(signInError, document.getElementById('signInBtn'));
+    }
+
     registerBtn.addEventListener('click', () => {
         container.classList.add("active");
+        signUpError.textContent = '';
     });
 
     loginBtn.addEventListener('click', () => {
         container.classList.remove("active");
+        signInError.textContent = '';
     });
 
     async function register() {
         const signUpName = document.getElementById("signUpName").value;
         const signUpEmail = document.getElementById("signUpEmail").value;
         const signUpPassword = document.getElementById("signUpPassword").value;
+        signUpError.textContent = '';
 
         // Validate email
         if (!valid(signUpEmail)) {
-            alert("Please enter a valid email address");
+            signUpError.textContent = "Please enter a valid email address";
             return;
         }
 
         // Validate password on client side
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/;
         if (!passwordRegex.test(signUpPassword)) {
-            alert("Password must be 8-15 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@.#$!%*?&)");
+            signUpError.textContent = "Password must be 8-15 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@.#$!%*?&)";
             return;
         }
 
@@ -65,22 +86,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             if (response.ok) {
                 container.classList.remove("active");
+                signUpError.textContent = '';
             } else {
-                alert(data.message || 'Registration failed.');
+                signUpError.textContent = data.message || 'Registration failed.';
             }
         } catch (error) {
             console.error("Error registering user:", error);
-            alert("An error occurred during registration. Please try again.");
+            signUpError.textContent = "An error occurred during registration. Please try again.";
         }
     }
 
     async function signIn() {
         const signInEmail = document.getElementById('signInEmail').value;
         const signInPassword = document.getElementById('signInPassword').value;
+        signInError.textContent = '';
 
         // Validate email
         if (!valid(signInEmail)) {
-            alert("Please enter a valid email address");
+            signInError.textContent = "Please enter a valid email address";
             return;
         }
 
@@ -98,11 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setUserEmail(signInEmail);
                 window.location.href = 'dashboard.html';
             } else {
-                alert(data.message || 'Invalid credentials');
+                signInError.textContent = data.message || 'Invalid credentials';
             }
         } catch (error) {
             console.error("Error signing in:", error);
-            alert("An error occurred during sign-in. Please try again.");
+            signInError.textContent = "An error occurred during sign-in. Please try again.";
         }
     }
 
@@ -117,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (signUpName && signUpEmail && signUpPassword) {
                     await register();
                 } else {
-                    alert("Please fill in all fields.");
+                    signUpError.textContent = "Please fill in all fields.";
                 }
             } else if (["signInEmail", "signInPassword"].includes(activeElement.id)) {
                 const signInEmail = document.getElementById('signInEmail').value;
@@ -126,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (signInEmail && signInPassword) {
                     await signIn();
                 } else {
-                    alert("Please fill in all fields.");
+                    signInError.textContent = "Please fill in all fields.";
                 }
             }
         }

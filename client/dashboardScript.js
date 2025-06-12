@@ -18,17 +18,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeText = document.getElementById('timeText');
     const userNameEl = document.getElementById('userName');
 
+    // Add error message element for dashboard
+    let dashboardError = document.getElementById('dashboardError');
+    if (!dashboardError) {
+        dashboardError = document.createElement('div');
+        dashboardError.id = 'dashboardError';
+        dashboardError.className = 'error-message';
+        dashboardError.style.marginTop = '10px';
+        dashboardError.style.textAlign = 'center';
+        clockInBtn.parentNode.insertBefore(dashboardError, clockInBtn.nextSibling);
+    }
+
     // Load and show username if stored
     const signUpName = localStorage.getItem('signUpName');
     userNameEl.textContent = signUpName ? signUpName : 'Guest';
 
     // Sign out logic
     signOutBtn.addEventListener('click', () => {
+        dashboardError.textContent = '';
         if (clockInBtn.value === "Clock In") {
             localStorage.removeItem('userEmail');
             window.location.href = 'index.html';
         } else if (clockInBtn.value === "Clock Out") {
-            alert('Please clock out before signing out');
+            dashboardError.textContent = 'Please clock out before signing out';
         }
     });
 
@@ -109,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     async function logTime(userEmail, totalTimeInDecimals) {
+        dashboardError.textContent = '';
         try {
             const response = await fetch(`${baseURL}/user/auth/logTimes`, {
                 method: "POST",
@@ -122,13 +135,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert("Logged time successfully!");
+                dashboardError.textContent = 'Logged time successfully!';
+                dashboardError.style.color = '#4caf50';
             } else {
-                alert(data.message || "Failed to log time.");
+                dashboardError.textContent = data.message || "Failed to log time.";
+                dashboardError.style.color = '#e74c3c';
             }
         } catch (error) {
             console.error("Error logging time:", error);
-            alert("An error occurred while logging time. Please try again.");
+            dashboardError.textContent = "An error occurred while logging time. Please try again.";
+            dashboardError.style.color = '#e74c3c';
         }
     }
 });
