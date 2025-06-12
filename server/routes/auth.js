@@ -9,6 +9,8 @@ const nodemailer = require('nodemailer');
 //const { UserEmail} = require( "./script.js");
 
 const VerificationCode = require('../models/VerificationCode'); // adjust path as needed
+const fs = require('fs');
+const path = require('path');
 
 // Log Time Route
 router.post('/logTimes', async (req, res) => {
@@ -165,11 +167,17 @@ router.post('/requestCode', async (req, res) => {
       },
     });
 
+    // Read and use the HTML template
+    const templatePath = path.join(__dirname, '../../client/passwordResetEmail.html');
+    let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
+    htmlTemplate = htmlTemplate.replace('{{PIN}}', resetCode);
+
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Password Reset Code',
-      text: `Your password reset code is: ${resetCode}`,
+      html: htmlTemplate,
+      text: `Your password reset code is: ${resetCode}` // fallback
     };
 
     await transporter.sendMail(mailOptions);
