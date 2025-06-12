@@ -32,7 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load and show username if stored
     const signUpName = localStorage.getItem('signUpName');
     userNameEl.textContent = signUpName ? signUpName : 'Guest';
-
+    window.addEventListener('beforeunload', function (e)
+    {
+        if(clockInBtn.value == "Clock Out")
+        {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+        else{
+            return;
+        }
+        
+    });
     // Sign out logic
     signOutBtn.addEventListener('click', () => {
         dashboardError.textContent = '';

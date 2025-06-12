@@ -14,6 +14,7 @@ function valid(email) {
     return pattern.test(email);
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('container');
     const registerBtn = document.getElementById('register');
@@ -39,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const signInForm = document.getElementById('signInBtn').closest('form');
         signInForm.insertBefore(signInError, document.getElementById('signInBtn'));
     }
-
+    
     registerBtn.addEventListener('click', () => {
         container.classList.add("active");
         signUpError.textContent = '';
