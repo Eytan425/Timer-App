@@ -30,9 +30,18 @@
                 <input type="text" id="signUpName" placeholder="Name" />
                 <input type="email" id="signUpEmail" placeholder="e.g. johndoe@example.com" />
                 <input type="password" id="signUpPassword" placeholder="Password" />
-                <small style="color: #666; font-size: 12px; margin-top: -5px; margin-bottom: 10px;">
-                    Password must be 8-15 characters with uppercase, lowercase, number, and special character
-                </small>
+                <!-- Password strength bar -->
+                <div id="passwordStrengthBar" style="height: 8px; width: 100%; background: #eee; border-radius: 4px; margin-top: 4px; margin-bottom: 4px;">
+                    <div id="passwordStrengthFill" style="height: 100%; width: 0%; background: red; border-radius: 4px;"></div>
+                </div>
+                <!-- Password requirements checklist -->
+                <ul id="passwordRequirements" style="list-style: none; padding-left: 0; font-size: 12px; color: #666; margin-bottom: 10px;">
+                    <li id="req-length">❌ 8-15 characters</li>
+                    <li id="req-upper">❌ At least one uppercase letter</li>
+                    <li id="req-lower">❌ At least one lowercase letter</li>
+                    <li id="req-number">❌ At least one number</li>
+                    <li id="req-special">❌ At least one special character (@.#$!%*?&)</li>
+                </ul>
                 <div class="error-message" id="signUpError"></div>
                 <input type="button" id="signUpBtn" class="button" value="Sign Up" />
             </form>

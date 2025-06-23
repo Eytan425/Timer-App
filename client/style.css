@@ -228,3 +228,31 @@ body{
     font-size: 10px;
 }
 
+/* Password strength bar styles */
+#passwordStrengthBar {
+    height: 8px;
+    width: 100%;
+    background: #eee;
+    border-radius: 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+#passwordStrengthFill {
+    height: 100%;
+    width: 0%;
+    background: red;
+    border-radius: 4px;
+    transition: width 0.3s, background 0.3s;
+}
+/* Password requirements checklist styles */
+#passwordRequirements {
+    list-style: none;
+    padding-left: 0;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 10px;
+}
+#passwordRequirements li {
+    margin-bottom: 2px;
+}
+

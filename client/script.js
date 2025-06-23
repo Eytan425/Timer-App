@@ -158,4 +158,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     signUpBtn.addEventListener('click', register);
     signInBtn.addEventListener('click', signIn);
+
+    // Add event listener for password input to update strength bar and requirements
+    const signUpPasswordInput = document.getElementById("signUpPassword"); // Get the password input field
+    const passwordStrengthFill = document.getElementById("passwordStrengthFill"); // Get the strength bar fill element
+    const reqLength = document.getElementById("req-length"); // Get the length requirement element
+    const reqUpper = document.getElementById("req-upper"); // Get the uppercase requirement element
+    const reqLower = document.getElementById("req-lower"); // Get the lowercase requirement element
+    const reqNumber = document.getElementById("req-number"); // Get the number requirement element
+    const reqSpecial = document.getElementById("req-special"); // Get the special character requirement element
+
+    // Listen for input changes on the password field
+    signUpPasswordInput.addEventListener("input", function () {
+        const password = signUpPasswordInput.value; // Get the current password value
+        // Check each requirement
+        const lengthValid = password.length >= 8 && password.length <= 15; // Check length
+        const upperValid = /[A-Z]/.test(password); // Check for uppercase
+        const lowerValid = /[a-z]/.test(password); // Check for lowercase
+        const numberValid = /\d/.test(password); // Check for number
+        const specialValid = /[@.#$!%*?&]/.test(password); // Check for special character
+
+        // Update checklist UI
+        reqLength.textContent = (lengthValid ? '✅' : '❌') + ' 8-15 characters'; // Update length
+        reqUpper.textContent = (upperValid ? '✅' : '❌') + ' At least one uppercase letter'; // Update uppercase
+        reqLower.textContent = (lowerValid ? '✅' : '❌') + ' At least one lowercase letter'; // Update lowercase
+        reqNumber.textContent = (numberValid ? '✅' : '❌') + ' At least one number'; // Update number
+        reqSpecial.textContent = (specialValid ? '✅' : '❌') + ' At least one special character (@.#$!%*?&)'; // Update special
+
+        // Calculate password strength (simple scoring)
+        let score = 0; // Initialize score
+        if (lengthValid) score++;
+        if (upperValid) score++;
+        if (lowerValid) score++;
+        if (numberValid) score++;
+        if (specialValid) score++;
+
+        // Set strength bar width and color based on score
+        const percent = (score / 5) * 100; // Calculate percent
+        passwordStrengthFill.style.width = percent + '%'; // Set width
+        if (score <= 2) {
+            passwordStrengthFill.style.background = 'red'; // Weak
+        } else if (score === 3 || score === 4) {
+            passwordStrengthFill.style.background = 'orange'; // Medium
+        } else {
+            passwordStrengthFill.style.background = 'green'; // Strong
+        }
+    });
 });
